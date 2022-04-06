@@ -1,55 +1,94 @@
-import React from "react";
-import { Box, HStack, VStack, Text, Image } from "native-base";
+import React, { useState, useCallback, useMemo } from "react";
+import { useWindowDimensions } from "react-native";
+import {
+  HStack,
+  VStack,
+  Text,
+  Box,
+  Image,
+  LayoutProps,
+  Pressable,
+} from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import HomeScreen from "../screens/HomeScreen";
 import CalendarScreen from "../screens/CalendarScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 
+import TodayInfoCard from "../components/TodayInfoCard";
 import MyHeader from "../components/Header";
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import Animated, { set } from "react-native-reanimated";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
+
+const INFO_HEADER_HEIGHT = 128;
+const MIN_HEIGHT = 0;
+let AnimatedHeaderValue = new Animated.Value(0);
+const ainmateHeaderHeight = AnimatedHeaderValue.interpolate({
+  inputRange: [0, INFO_HEADER_HEIGHT - MIN_HEIGHT],
+  outputRange: [INFO_HEADER_HEIGHT, MIN_HEIGHT],
+  extrapolate: "clamp",
+});
 
 const Navigation = () => {
   return (
     <NavigationContainer>
-      <HomeTab />
+      <MyTab />
     </NavigationContainer>
   );
 };
 
-// Tab - Home (HomeStack + CalendarStack + SettingsStack)
-const HomeTab = () => {
+// Tab - MyTab (HomeTabs + CalendarStack + SettingsStack)
+const MyTab = () => {
   return (
     <Tab.Navigator
-      initialRouteName="HomeStack"
+      initialRouteName="HomeTabs"
       screenOptions={{
+        safeAreaInsets: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
         headerShown: false,
-        tabBarInactiveTintColor: "#888",
-        tabBarActiveTintColor: "#024D61",
         tabBarStyle: {
           height: 56,
+          backgroundColor: "#E8F3FF",
         },
-        tabBarIconStyle: {
-          width: 24,
-          height: 24,
+        tabBarItemStyle: {
+          paddingTop: 8,
         },
+        // tabBarIconStyle: {
+        //   width: 24,
+        //   height: 24,
+        // },
+        tabBarInactiveTintColor: "#888888",
+        tabBarActiveTintColor: "#024D61",
         tabBarLabelStyle: {
           fontSize: 12,
+          marginBottom: 4,
         },
       }}
     >
       <Tab.Screen
-        name="HomeStack"
-        component={HomeStack}
+        name="HomeTabs"
+        component={HomeTabs}
         options={{
           title: "清單",
+          headerShown: true,
+          header: (props) => <MyHeader />,
           tabBarIcon: ({ focused }) => (
-            <>
+            <Box>
               {focused ? (
                 <Image
                   source={require("../icon/icon_noteadd_actived.png")}
@@ -61,7 +100,7 @@ const HomeTab = () => {
                   alt={"HomeIcon_default"}
                 />
               )}
-            </>
+            </Box>
           ),
         }}
       />
@@ -71,7 +110,7 @@ const HomeTab = () => {
         options={{
           title: "日曆",
           tabBarIcon: ({ focused }) => (
-            <>
+            <Box>
               {focused ? (
                 <Image
                   source={require("../icon/icon_calendar_actived.png")}
@@ -83,7 +122,7 @@ const HomeTab = () => {
                   alt={"CalendarIcon_default"}
                 />
               )}
-            </>
+            </Box>
           ),
         }}
       />
@@ -93,7 +132,7 @@ const HomeTab = () => {
         options={{
           title: "設定",
           tabBarIcon: ({ focused }) => (
-            <>
+            <Box>
               {focused ? (
                 <Image
                   source={require("../icon/icon_settings_actived.png")}
@@ -105,7 +144,7 @@ const HomeTab = () => {
                   alt={"SettingsIcon_default"}
                 />
               )}
-            </>
+            </Box>
           ),
         }}
       />
@@ -113,14 +152,107 @@ const HomeTab = () => {
   );
 };
 
+// Top Tab - HomeTabs (Many Stacks)
+const HomeTabs = ({ navigation }) => {
+  const [tabs, setTabs] = useState([]);
+  const [tabIndex, setTabIndex] = useState(1);
+  const createNewTab = () => {
+    const newTab = {
+      name: `${tabIndex}`,
+    };
+    setTabs([...tabs, newTab]);
+    setTabIndex(tabIndex + 1);
+  };
+  return (
+    <>
+      {/* <Animated.View style={{ height: ainmateHeaderHeight }}> */}
+      <Pressable
+        onPress={() => {
+          createNewTab();
+        }}
+      >
+        <TodayInfoCard />
+      </Pressable>
+
+      {/* </Animated.View> */}
+      <TopTab.Navigator
+        screenOptions={{
+          safeAreaInsets: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          },
+          tabBarStyle: {
+            elevation: 0,
+            backgroundColor: "#E8F3FF",
+          },
+          tabBarScrollEnabled: true,
+          tabBarActiveTintColor: "#024D61",
+          tabBarInactiveTintColor: "#888888",
+          tabBarContentContainerStyle: {
+            height: 56,
+          },
+          tabBarItemStyle: {
+            width: "auto",
+            paddingHorizontal: 12,
+          },
+          tabBarPressColor: "#E8F3FF",
+          tabBarIndicatorStyle: {
+            backgroundColor: "#024D61",
+          },
+          tabBarLabelStyle: {
+            fontSize: 16,
+          },
+        }}
+      >
+        <TopTab.Screen
+          name="每日"
+          children={(props) => <HomeStack number={"000"} {...props} />}
+        />
+        <TopTab.Screen
+          name="所有"
+          children={(props) => <HomeStack number={"0012"} {...props} />}
+        />
+
+        {tabs.map((tab, index) => {
+          return (
+            <TopTab.Screen
+              key={index.toString()}
+              name={tab.name}
+              options={{ title: ` 87` }}
+              children={(props) => <HomeStack number={tab.name} {...props} />}
+            />
+          );
+        })}
+
+        {/* <TopTab.Screen name="測試1" component={HomeStack} />
+        <TopTab.Screen name="測試2" component={HomeStack} />
+        <TopTab.Screen name="測試3" component={HomeStack} />
+        <TopTab.Screen name="測試4" component={HomeStack} />
+        <TopTab.Screen name="測試5" component={HomeStack} />
+        <TopTab.Screen name="測試6" component={HomeStack} />
+        <TopTab.Screen name="12345679abcdefghijk" component={HomeStack} /> */}
+      </TopTab.Navigator>
+    </>
+  );
+};
+
 // Stack - Home (HomeScreen)
-const HomeStack = ({ navigation }) => {
+const HomeStack = (parentProps, { navigation }) => {
   return (
     <Stack.Navigator
       screenOptions={{
-        // headerShown: false,
+        safeAreaInsets: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
+        initialRouteName: "Home",
+        headerShown: false,
         headerShadowVisible: false,
-        header: (props) => <MyHeader />,
+        // header: (props) => <MyHeader />,
         // headerStyle: {
         //   height: 24,
         //   backgroundColor: "#E8F3FF",
@@ -128,7 +260,11 @@ const HomeStack = ({ navigation }) => {
         title: null,
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} />
+      {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
+      <Stack.Screen
+        name="Home"
+        children={(props) => <HomeScreen {...parentProps} />}
+      />
     </Stack.Navigator>
   );
 };
@@ -138,6 +274,12 @@ const CalendarStack = ({ navigation }) => {
   return (
     <Stack.Navigator
       screenOptions={{
+        safeAreaInsets: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
         headerShown: false,
         title: null,
       }}
@@ -152,6 +294,12 @@ const SettingsStack = ({ navigation }) => {
   return (
     <Stack.Navigator
       screenOptions={{
+        safeAreaInsets: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
         headerShown: false,
         title: null,
       }}
