@@ -5,13 +5,13 @@ import Item from "../components/Item";
 
 const HomeScreen = (props, { navigation }) => {
   return (
-    <Box flex={1}>
+    <Box flex={1} bgColor={"#F4F4F4"}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Box bgColor={"red.100"}>
+        {/* <Box bgColor={"red.100"}>
           <Text>I am HomeScreen</Text>
           <Text>{props.number}</Text>
-        </Box>
-        <Center>
+        </Box> */}
+        <Center pb={88}>
           <Item />
           <Item />
           <Item />

@@ -220,7 +220,6 @@ const HomeTabs = ({ navigation }) => {
             <TopTab.Screen
               key={index.toString()}
               name={tab.name}
-              options={{ title: ` 87` }}
               children={(props) => <HomeStack number={tab.name} {...props} />}
             />
           );
