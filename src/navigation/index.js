@@ -8,6 +8,8 @@ import {
   Image,
   LayoutProps,
   Pressable,
+  Button,
+  Center,
 } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -17,6 +19,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import HomeScreen from "../screens/HomeScreen";
 import CalendarScreen from "../screens/CalendarScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import NoteScreen from "../screens/NoteScreen";
 
 import TodayInfoCard from "../components/TodayInfoCard";
 import MyHeader from "../components/Header";
@@ -49,7 +52,7 @@ const Navigation = () => {
 };
 
 // Tab - MyTab (HomeTabs + CalendarStack + SettingsStack)
-const MyTab = () => {
+const MyTab = ({ navigation }) => {
   return (
     <Tab.Navigator
       initialRouteName="HomeTabs"
@@ -148,6 +151,28 @@ const MyTab = () => {
           ),
         }}
       />
+      <Tab.Screen
+        name="NoteAddStack"
+        component={NoteAddStack}
+        options={{
+          tabBarButton: () => null,
+          tabBarIcon: () => null,
+          title: "",
+          tabBarStyle: {
+            display: "none",
+          },
+          // headerShown: true,
+          // title: "新增",
+          // headerLeft: () => (
+          //   <Pressable onPress={() => navigation.navigate("HomeTabs")}>
+          //     <Image
+          //       source={require("../icon/icon_add.png")}
+          //       alt={"add_icon"}
+          //     />
+          //   </Pressable>
+          // ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
@@ -233,6 +258,22 @@ const HomeTabs = ({ navigation }) => {
         <TopTab.Screen name="測試6" component={HomeStack} />
         <TopTab.Screen name="12345679abcdefghijk" component={HomeStack} /> */}
       </TopTab.Navigator>
+      <Pressable
+        position={"absolute"}
+        w={58}
+        h={58}
+        p={4}
+        bgColor={"#D3F9E7"}
+        rounded={16}
+        bottom={4}
+        right={4}
+        shadow={3}
+        onPress={() => {
+          navigation.navigate("NoteAddStack");
+        }}
+      >
+        <Image source={require("../icon/icon_add.png")} alt={"add_icon"} />
+      </Pressable>
     </>
   );
 };
@@ -264,6 +305,10 @@ const HomeStack = (parentProps, { navigation }) => {
         name="Home"
         children={(props) => <HomeScreen {...parentProps} />}
       />
+      {/* <Stack.Screen
+        name="Note"
+        children={(props) => <NoteScreen {...parentProps} />}
+      /> */}
     </Stack.Navigator>
   );
 };
@@ -304,6 +349,52 @@ const SettingsStack = ({ navigation }) => {
       }}
     >
       <Stack.Screen name="Settings" component={SettingsScreen} />
+    </Stack.Navigator>
+  );
+};
+
+// Stack - NoteAdd (NoteAddScreen)
+const NoteAddStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        safeAreaInsets: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
+        headerShown: false,
+        title: null,
+      }}
+    >
+      <Stack.Screen
+        name="NoteAdd"
+        component={NoteScreen}
+        options={{
+          headerShown: true,
+          title: "新增",
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.navigate("HomeTabs")}>
+              <Center h={16}>
+                <Image
+                  source={require("../icon/icon_back.png")}
+                  alt={"add_icon"}
+                />
+              </Center>
+            </Pressable>
+          ),
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: "#E8F3FF",
+          },
+          headerTitleStyle: {
+            color: "#024D61",
+            fontSize: 18,
+          },
+          headerTitleAlign: "center",
+        }}
+      />
     </Stack.Navigator>
   );
 };

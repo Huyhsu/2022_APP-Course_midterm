@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Center,
-  Input,
   Image,
   HStack,
   VStack,
   Text,
   CircleIcon,
+  Pressable,
 } from "native-base";
+
 import { LogBox } from "react-native";
 
 LogBox.ignoreLogs(["NativeBase:"]);
 
 const Item = (props) => {
+  const [clicked, setClick] = useState(false);
+  const handleClick = () => {
+    setClick(!clicked);
+  };
+
   return (
     <Box
       bgColor={"#F8FEFF"}
@@ -40,15 +46,31 @@ const Item = (props) => {
                 行動程式期中作業
               </Text>
               <Text fontSize={"sm"} color={"#888888"}>
-                時間
+                04/14 (四) 12:30
               </Text>
             </VStack>
           </HStack>
-
-          <Image
-            source={require("../icon/icon_checkbox_blank.png")}
-            alt={"blank_checkbox"}
-          />
+          <Pressable
+            onPress={() => {
+              handleClick();
+            }}
+          >
+            {clicked ? (
+              <Box>
+                <Image
+                  source={require("../icon/icon_checkbox.png")}
+                  alt={"checked_checkbox"}
+                />
+              </Box>
+            ) : (
+              <>
+                <Image
+                  source={require("../icon/icon_checkbox_blank.png")}
+                  alt={"blank_checkbox"}
+                />
+              </>
+            )}
+          </Pressable>
         </HStack>
       </Center>
     </Box>
