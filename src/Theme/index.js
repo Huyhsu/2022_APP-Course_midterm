@@ -16,6 +16,14 @@ export const lightTheme = {
     primary700: "#024D61",
     // Secondary
     secondary700: "#E8F3FF",
+    // Green
+    green700: "#D3F9E7",
+    // High
+    high700: "#D27373",
+    // Medium
+    medium700: "#DEB16D",
+    // Low
+    low700: "#73C1D2",
   },
 };
 
@@ -23,7 +31,10 @@ export const darkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    light400: "#F4F4F4",
+    light100: "#121212",
+    // light400: "",
     primary700: "white",
+    green700: "#888888",
+    // secondary700: "#111111",
   },
 };

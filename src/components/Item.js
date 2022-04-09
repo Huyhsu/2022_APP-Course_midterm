@@ -20,11 +20,12 @@ const Item = (props) => {
   const handleClick = () => {
     setClick(!clicked);
   };
-  const { colors } = useTheme();
   const { title, time } = props.item;
+  const { colors } = useTheme();
   return (
     <Box
       _light={{ bgColor: colors.light100 }}
+      _dark={{ bgColor: colors.light100 }}
       h={88}
       w={328}
       py={6}
@@ -40,7 +41,7 @@ const Item = (props) => {
           justifyContent={"space-between"}
         >
           <HStack alignItems={"center"}>
-            <CircleIcon w={12} h={12} color={"#D27373"} />
+            <CircleIcon w={12} h={12} color={colors.medium700} />
             <VStack ml={6}>
               <Text _light={{ color: colors.primary700 }} fontSize={"lg"}>
                 行動程式期中作業{title}

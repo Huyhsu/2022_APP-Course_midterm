@@ -18,6 +18,11 @@ const MyHeader = (props) => {
               bgColor: colors.light100,
               placeholderTextColor: colors.light700,
             }}
+            _dark={{
+              color: colors.dark700,
+              bgColor: colors.light100,
+              placeholderTextColor: colors.light700,
+            }}
             w={"80%"}
             h={8}
             p={0}

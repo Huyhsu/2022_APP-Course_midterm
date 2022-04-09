@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Platform } from "react-native";
+import { useTheme } from "@react-navigation/native";
 import {
   Box,
   HStack,
@@ -18,12 +19,20 @@ import {
   VStack,
   Radio,
   Modal,
+  useColorMode,
 } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useDispatch, useSelector } from "react-redux";
+import { addCategory } from "../redux/actions";
 
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
 const NoteScreen = ({ navigation }) => {
+  const { categoryList } = useSelector((state) => state.item);
+  const dispatch = useDispatch();
+
+  const [newCategory, setNewCategory] = useState("");
+
   const [theItem, setTheItem] = useState({});
   const createItem = () => {
     let newItem = {
@@ -41,6 +50,7 @@ const NoteScreen = ({ navigation }) => {
   const [show, setShow] = useState(false);
   // Native Base Modal
   const [modalVisible, setModalVisible] = useState(false);
+  const [secondModalVisible, setSecondModalVisible] = useState(false);
   // Title
   const [title, setTitle] = useState("");
   // Note
@@ -99,11 +109,20 @@ const NoteScreen = ({ navigation }) => {
     setMode(currentMode);
   };
 
+  const { colors } = useTheme();
+  const { colorMode } = useColorMode();
+
   return (
-    <Box bgColor={"#F8FEFF"}>
+    <Box _light={{ bgColor: colors.light100 }}>
       <ScrollView w={"100%"} px={4} pt={8}>
         <FormControl isRequired>
-          <FormControl.Label _text={{ fontSize: "md", color: "#024D61" }}>
+          <FormControl.Label
+            _text={{
+              fontSize: "md",
+              color:
+                colorMode == "light" ? colors.primary700 : colors.primary700,
+            }}
+          >
             標題
           </FormControl.Label>
           <Input placeholder={"輸入標題"} fontSize={"md"} />
@@ -112,7 +131,13 @@ const NoteScreen = ({ navigation }) => {
           <TextArea placeholder={"添加備註..."} fontSize={"md"} minH={130} />
         </FormControl>
         <FormControl mt={4} isRequired>
-          <FormControl.Label _text={{ fontSize: "md", color: "#024D61" }}>
+          <FormControl.Label
+            _text={{
+              fontSize: "md",
+              color:
+                colorMode == "light" ? colors.primary700 : colors.primary700,
+            }}
+          >
             日期
           </FormControl.Label>
           <Pressable onPress={() => showMode("date")}>
@@ -133,7 +158,13 @@ const NoteScreen = ({ navigation }) => {
         </FormControl>
 
         <FormControl mt={4} isRequired>
-          <FormControl.Label _text={{ fontSize: "md", color: "#024D61" }}>
+          <FormControl.Label
+            _text={{
+              fontSize: "md",
+              color:
+                colorMode == "light" ? colors.primary700 : colors.primary700,
+            }}
+          >
             類別
           </FormControl.Label>
           <Pressable
@@ -177,28 +208,24 @@ const NoteScreen = ({ navigation }) => {
                         setCategory(nextValue);
                       }}
                     >
-                      <Radio
-                        value="作業"
-                        mx={1}
-                        _text={{ color: "#333333", fontSize: "md" }}
-                      >
-                        作業
-                      </Radio>
-                      <Radio
-                        value="考試"
-                        mx={1}
-                        _text={{ color: "#333333", fontSize: "md" }}
-                      >
-                        考試
-                      </Radio>
+                      {categoryList.categorys.length == 0 ? (
+                        <Text>請先新增一個類別</Text>
+                      ) : (
+                        categoryList.categorys.map((value, index) => (
+                          <Radio
+                            key={value + index}
+                            value={value}
+                            mx={1}
+                            _text={{ color: colors.dark700, fontSize: "md" }}
+                          >
+                            {value}
+                          </Radio>
+                        ))
+                      )}
                     </Radio.Group>
                     <FormControl.ErrorMessage>
                       Something is wrong.
                     </FormControl.ErrorMessage>
-                  </FormControl>
-                  <FormControl mt={16}>
-                    <FormControl.Label>建立類別</FormControl.Label>
-                    <Input />
                   </FormControl>
                 </Modal.Body>
               </ScrollView>
@@ -207,17 +234,72 @@ const NoteScreen = ({ navigation }) => {
                 <Button
                   flex="1"
                   onPress={() => {
-                    // setModalVisible(false);
+                    setModalVisible(false);
+                    setSecondModalVisible(!secondModalVisible);
+                    // setNewCategory("");
+                    // dispatch(addCategory(newCategory));
                   }}
                 >
-                  新增類別
+                  新增
+                </Button>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          <Modal
+            isOpen={secondModalVisible}
+            onClose={() => setSecondModalVisible(false)}
+            avoidKeyboard
+            // justifyContent="flex-end"
+            bottom="4"
+            size="lg"
+          >
+            <Modal.Content>
+              <Modal.Body>
+                <FormControl isRequired>
+                  <FormControl.Label
+                    _text={{
+                      fontSize: "md",
+                      color:
+                        colorMode == "light"
+                          ? colors.primary700
+                          : colors.primary700,
+                    }}
+                    mt={16}
+                  >
+                    新增一個類別
+                  </FormControl.Label>
+                  <Input
+                    placeholder={"輸入類別名稱"}
+                    fontSize={"md"}
+                    value={newCategory}
+                    onChangeText={(text) => setNewCategory(text)}
+                  />
+                </FormControl>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  flex="1"
+                  onPress={() => {
+                    setSecondModalVisible(false);
+                    setNewCategory("");
+                    setModalVisible(!modalVisible);
+                    dispatch(addCategory(newCategory));
+                  }}
+                >
+                  新增
                 </Button>
               </Modal.Footer>
             </Modal.Content>
           </Modal>
         </FormControl>
         <FormControl mt={4} isRequired>
-          <FormControl.Label _text={{ fontSize: "md", color: "#024D61" }}>
+          <FormControl.Label
+            _text={{
+              fontSize: "md",
+              color:
+                colorMode == "light" ? colors.primary700 : colors.primary700,
+            }}
+          >
             劃分
           </FormControl.Label>
           <Radio.Group
@@ -232,7 +314,10 @@ const NoteScreen = ({ navigation }) => {
             <Radio
               value="high"
               mx={1}
-              _text={{ color: "#333333", fontSize: "md" }}
+              _text={{
+                color: colors.dark700,
+                fontSize: "md",
+              }}
               colorScheme="red"
               // color={"#D27373"}
             >
@@ -241,18 +326,18 @@ const NoteScreen = ({ navigation }) => {
             <Radio
               value="medium"
               mx={1}
-              _text={{ color: "#333333", fontSize: "md" }}
+              _text={{ color: colors.dark700, fontSize: "md" }}
               colorScheme="yellow"
-              // color={"#DEB16D"}
+              // color={colors.medium700}
             >
               重要
             </Radio>
             <Radio
               value="low"
               mx={1}
-              _text={{ color: "#333333", fontSize: "md" }}
-              colorScheme="blue"
-              // color={"#73C1D2"}
+              _text={{ color: colors.dark700, fontSize: "md" }}
+              colorScheme="cyan"
+              // color={colors.low700}
             >
               普通
             </Radio>
@@ -263,8 +348,8 @@ const NoteScreen = ({ navigation }) => {
         </FormControl>
         <Center>
           <Button
-            bgColor={"#D3F9E7"}
-            _text={{ color: "#024D61", fontSize: "md" }}
+            bgColor={colors.green700}
+            _text={{ color: colors.primary700, fontSize: "md" }}
             h={12}
             w={"60%"}
             mt={16}

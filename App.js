@@ -1,5 +1,5 @@
 import React from "react";
-import { NativeBaseProvider, StatusBar } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import {
   SafeAreaProvider,
   SafeAreaView,
@@ -7,8 +7,8 @@ import {
   initialSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
-import store from "./src/redux/store";
 
+import store from "./src/redux/store";
 import Navigation from "./src/navigation";
 
 export default function App() {

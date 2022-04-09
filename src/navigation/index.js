@@ -69,20 +69,21 @@ const Navigation = () => {
 
 // Tab - MyTab (HomeTabs + CalendarStack + SettingsStack)
 const MyTab = () => {
+  const { colors } = useTheme();
   return (
     <Tab.Navigator
       initialRouteName="HomeTabs"
       screenOptions={{
-        safeAreaInsets: {
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-        },
+        // safeAreaInsets: {
+        //   top: 0,
+        //   bottom: 0,
+        //   left: 0,
+        //   right: 0,
+        // },
         headerShown: false,
         tabBarStyle: {
           height: 56,
-          backgroundColor: "#E8F3FF",
+          backgroundColor: colors.secondary700,
         },
         tabBarItemStyle: {
           paddingTop: 8,
@@ -91,8 +92,8 @@ const MyTab = () => {
           width: 24,
           height: 24,
         },
-        tabBarInactiveTintColor: "#888888",
-        tabBarActiveTintColor: "#024D61",
+        tabBarInactiveTintColor: colors.light700,
+        tabBarActiveTintColor: colors.primary700,
         tabBarLabelStyle: {
           fontSize: 12,
           marginBottom: 4,
@@ -188,6 +189,7 @@ const HomeTabs = ({ navigation }) => {
   const { itemList, categoryList } = useSelector((state) => state.item);
   const dispatch = useDispatch();
 
+  const { colors } = useTheme();
   return (
     <>
       {/* <Animated.View style={{ height: ainmateHeaderHeight }}> */}
@@ -211,11 +213,11 @@ const HomeTabs = ({ navigation }) => {
           },
           tabBarStyle: {
             elevation: 0,
-            backgroundColor: "#E8F3FF",
+            backgroundColor: colors.secondary700,
           },
           tabBarScrollEnabled: true,
-          tabBarActiveTintColor: "#024D61",
-          tabBarInactiveTintColor: "#888888",
+          tabBarActiveTintColor: colors.primary700,
+          tabBarInactiveTintColor: colors.light700,
           tabBarContentContainerStyle: {
             height: 56,
           },
@@ -223,9 +225,9 @@ const HomeTabs = ({ navigation }) => {
             width: "auto",
             paddingHorizontal: 12,
           },
-          tabBarPressColor: "#E8F3FF",
+          tabBarPressColor: colors.secondary700,
           tabBarIndicatorStyle: {
-            backgroundColor: "#024D61",
+            backgroundColor: colors.primary700,
           },
           tabBarLabelStyle: {
             fontSize: 16,
@@ -256,7 +258,7 @@ const HomeTabs = ({ navigation }) => {
         w={58}
         h={58}
         p={4}
-        bgColor={"#D3F9E7"}
+        bgColor={colors.green700}
         rounded={16}
         bottom={4}
         right={4}
@@ -367,6 +369,8 @@ const SettingsStack = ({ navigation }) => {
 
 // Stack - NoteAdd (NoteAddScreen)
 const NoteAddStack = ({ navigation }) => {
+  const { colors } = useTheme();
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -398,10 +402,10 @@ const NoteAddStack = ({ navigation }) => {
           ),
           headerShadowVisible: false,
           headerStyle: {
-            backgroundColor: "#E8F3FF",
+            backgroundColor: colors.secondary700,
           },
           headerTitleStyle: {
-            color: "#024D61",
+            color: colors.primary700,
             fontSize: 18,
           },
           headerTitleAlign: "center",
