@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Center,
@@ -9,20 +9,22 @@ import {
   CircleIcon,
   Pressable,
 } from "native-base";
+import { useTheme } from "@react-navigation/native";
 
 import { LogBox } from "react-native";
-
 LogBox.ignoreLogs(["NativeBase:"]);
 
 const Item = (props) => {
+  // Check
   const [clicked, setClick] = useState(false);
   const handleClick = () => {
     setClick(!clicked);
   };
-
+  const { colors } = useTheme();
+  const { title, time } = props.item;
   return (
     <Box
-      bgColor={"#F8FEFF"}
+      _light={{ bgColor: colors.light100 }}
       h={88}
       w={328}
       py={6}
@@ -30,8 +32,6 @@ const Item = (props) => {
       pr={4}
       mt={3}
       borderRadius={5}
-      // borderWidth={1}
-      // borderColor={"#888888"}
     >
       <Center>
         <HStack
@@ -40,13 +40,13 @@ const Item = (props) => {
           justifyContent={"space-between"}
         >
           <HStack alignItems={"center"}>
-            <CircleIcon w={12} h={12} color={"#D27373"}></CircleIcon>
+            <CircleIcon w={12} h={12} color={"#D27373"} />
             <VStack ml={6}>
-              <Text fontSize={"lg"} color={"#024D61"}>
-                行動程式期中作業{props.data.title}
+              <Text _light={{ color: colors.primary700 }} fontSize={"lg"}>
+                行動程式期中作業{title}
               </Text>
-              <Text fontSize={"sm"} color={"#888888"}>
-                04/14 (四) 12:30
+              <Text _light={{ color: colors.light700 }} fontSize={"sm"}>
+                04/14 (四) 12:30{time}
               </Text>
             </VStack>
           </HStack>

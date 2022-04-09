@@ -10,11 +10,15 @@ import {
   Pressable,
   Button,
   Center,
+  useColorMode,
+  StatusBar,
 } from "native-base";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import HomeScreen from "../screens/HomeScreen";
 import CalendarScreen from "../screens/CalendarScreen";
@@ -29,6 +33,9 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import Animated, { set } from "react-native-reanimated";
+import { addCategory } from "../redux/actions";
+
+import { lightTheme, darkTheme } from "../Theme";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,8 +51,16 @@ const ainmateHeaderHeight = AnimatedHeaderValue.interpolate({
 });
 
 const Navigation = () => {
+  const { colorMode } = useColorMode();
+  const MyTheme = colorMode == "light" ? lightTheme : darkTheme;
+  const colors = MyTheme.colors;
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
+      <StatusBar
+        barStyle={colorMode == "light" ? "dark-content" : "light-content"}
+        backgroundColor={colorMode == "light" ? colors.secondary700 : "black"}
+      />
       <MyTab />
     </NavigationContainer>
   );
@@ -179,21 +194,26 @@ const MyTab = ({ navigation }) => {
 
 // Top Tab - HomeTabs (Many Stacks)
 const HomeTabs = ({ navigation }) => {
-  const [tabs, setTabs] = useState([]);
-  const [tabIndex, setTabIndex] = useState(1);
-  const createNewTab = () => {
-    const newTab = {
-      name: `${tabIndex}`,
-    };
-    setTabs([...tabs, newTab]);
-    setTabIndex(tabIndex + 1);
-  };
+  // const [tabs, setTabs] = useState([]);
+  // const [tabIndex, setTabIndex] = useState(1);
+  // const createNewTab = () => {
+  //   const newTab = {
+  //     name: `${tabIndex}`,
+  //   };
+  //   setTabs([...tabs, newTab]);
+  //   setTabIndex(tabIndex + 1);
+  // };
+
+  const { itemList, categoryList } = useSelector((state) => state.item);
+  const dispatch = useDispatch();
+
   return (
     <>
       {/* <Animated.View style={{ height: ainmateHeaderHeight }}> */}
       <Pressable
         onPress={() => {
-          createNewTab();
+          // createNewTab();
+          // dispatch(addCategory());
         }}
       >
         <TodayInfoCard />
@@ -232,31 +252,23 @@ const HomeTabs = ({ navigation }) => {
         }}
       >
         <TopTab.Screen
-          name="每日"
-          children={(props) => <HomeStack number={"000"} {...props} />}
-        />
-        <TopTab.Screen
           name="所有"
-          children={(props) => <HomeStack number={"0012"} {...props} />}
+          children={(props) => <HomeStack currentList={itemList.items} />}
         />
-
-        {tabs.map((tab, index) => {
+        {categoryList.categorys.map((category, index) => {
+          let currentCategoryItemList = [
+            ...itemList.items.filter((item) => item.category == category),
+          ];
           return (
             <TopTab.Screen
-              key={index.toString()}
-              name={tab.name}
-              children={(props) => <HomeStack number={tab.name} {...props} />}
+              key={category + index}
+              name={category}
+              children={(props) => (
+                <HomeStack currentList={currentCategoryItemList} />
+              )}
             />
           );
         })}
-
-        {/* <TopTab.Screen name="測試1" component={HomeStack} />
-        <TopTab.Screen name="測試2" component={HomeStack} />
-        <TopTab.Screen name="測試3" component={HomeStack} />
-        <TopTab.Screen name="測試4" component={HomeStack} />
-        <TopTab.Screen name="測試5" component={HomeStack} />
-        <TopTab.Screen name="測試6" component={HomeStack} />
-        <TopTab.Screen name="12345679abcdefghijk" component={HomeStack} /> */}
       </TopTab.Navigator>
       <Pressable
         position={"absolute"}

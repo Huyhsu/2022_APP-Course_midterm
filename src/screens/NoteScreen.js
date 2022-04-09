@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Platform } from "react-native";
 import {
   Box,
   HStack,
@@ -18,11 +19,7 @@ import {
   Radio,
   Modal,
 } from "native-base";
-
-import { Platform } from "react-native";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { set } from "react-native-reanimated";
 
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
@@ -38,21 +35,24 @@ const NoteScreen = ({ navigation }) => {
     };
     setTheItem(newItem);
   };
-  // Title
-  const [title, setTitle] = useState("");
-  const [note, setNote] = useState("");
-  // Date and Time
+  // Date Time Picker
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  // Native Base Modal
+  const [modalVisible, setModalVisible] = useState(false);
+  // Title
+  const [title, setTitle] = useState("");
+  // Note
+  const [note, setNote] = useState("");
+  // Date and Time
   const [dateText, setDateText] = useState("");
   const [timeText, setTimeText] = useState("");
-  // Modal and Category
-  const [modalVisible, setModalVisible] = useState(false);
+  // Category
   const [category, setCategory] = useState("");
   // Divide
   const [divide, setDevide] = useState("low");
-
+  // 取得日期(設定日期文字)
   const getDate = (currentDate) => {
     let tempDate = new Date(currentDate);
     let fDate =
@@ -66,7 +66,7 @@ const NoteScreen = ({ navigation }) => {
     let fDay = "(" + days[tempDate.getDay()] + ")";
     setDateText(fDate + " " + fDay + " ");
   };
-
+  // 取得時間(設定最終時間文字)
   const getTime = (currentDate) => {
     let tempDate = new Date(currentDate);
     let fTime =
@@ -75,10 +75,9 @@ const NoteScreen = ({ navigation }) => {
       ":" +
       (tempDate.getMinutes() < 10 ? "0" : "") +
       tempDate.getMinutes();
-
     setTimeText(dateText + fTime);
   };
-
+  // Date Time Picker Display (set date then time)
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
@@ -95,7 +94,6 @@ const NoteScreen = ({ navigation }) => {
       return null;
     }
   };
-
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);

@@ -15,12 +15,11 @@ export default function App() {
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <Provider store={store}>
-        <StatusBar backgroundColor={"#E8F3FF"} barStyle={"dark-content"} />
-        <SafeAreaView flex={1}>
-          <NativeBaseProvider>
-            <Navigation />
-          </NativeBaseProvider>
-        </SafeAreaView>
+        {/* <SafeAreaView flex={1}> */}
+        <NativeBaseProvider>
+          <Navigation />
+        </NativeBaseProvider>
+        {/* </SafeAreaView> */}
       </Provider>
     </SafeAreaProvider>
   );

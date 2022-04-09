@@ -1,10 +1,15 @@
 import React from "react";
-import { Box, HStack, Text } from "native-base";
+import { useTheme, Box, HStack, Text, VStack } from "native-base";
+
+import SettingsOptions from "../components/SettingsOption";
 
 const SettingsScreen = ({ navigation }) => {
   return (
-    <Box>
-      <Text>I am SettingsScreen</Text>
+    <Box flex={1}>
+      <VStack>
+        <SettingsOptions />
+        <SettingsOptions />
+      </VStack>
     </Box>
   );
 };
