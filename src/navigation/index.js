@@ -36,6 +36,7 @@ import Animated, { set } from "react-native-reanimated";
 import { addCategory } from "../redux/actions";
 
 import { lightTheme, darkTheme } from "../Theme";
+import DisplaySettingScreen from "../screens/DisplaySettingScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -67,7 +68,7 @@ const Navigation = () => {
 };
 
 // Tab - MyTab (HomeTabs + CalendarStack + SettingsStack)
-const MyTab = ({ navigation }) => {
+const MyTab = () => {
   return (
     <Tab.Navigator
       initialRouteName="HomeTabs"
@@ -86,10 +87,10 @@ const MyTab = ({ navigation }) => {
         tabBarItemStyle: {
           paddingTop: 8,
         },
-        // tabBarIconStyle: {
-        //   width: 24,
-        //   height: 24,
-        // },
+        tabBarIconStyle: {
+          width: 24,
+          height: 24,
+        },
         tabBarInactiveTintColor: "#888888",
         tabBarActiveTintColor: "#024D61",
         tabBarLabelStyle: {
@@ -176,16 +177,6 @@ const MyTab = ({ navigation }) => {
           tabBarStyle: {
             display: "none",
           },
-          // headerShown: true,
-          // title: "新增",
-          // headerLeft: () => (
-          //   <Pressable onPress={() => navigation.navigate("HomeTabs")}>
-          //     <Image
-          //       source={require("../icon/icon_add.png")}
-          //       alt={"add_icon"}
-          //     />
-          //   </Pressable>
-          // ),
         }}
       />
     </Tab.Navigator>
@@ -194,16 +185,6 @@ const MyTab = ({ navigation }) => {
 
 // Top Tab - HomeTabs (Many Stacks)
 const HomeTabs = ({ navigation }) => {
-  // const [tabs, setTabs] = useState([]);
-  // const [tabIndex, setTabIndex] = useState(1);
-  // const createNewTab = () => {
-  //   const newTab = {
-  //     name: `${tabIndex}`,
-  //   };
-  //   setTabs([...tabs, newTab]);
-  //   setTabIndex(tabIndex + 1);
-  // };
-
   const { itemList, categoryList } = useSelector((state) => state.item);
   const dispatch = useDispatch();
 
@@ -345,8 +326,9 @@ const CalendarStack = ({ navigation }) => {
   );
 };
 
-// Stack - Settings (SettingsScreen)
+// Stack - Settings (SettingsScreen + DisplaySettingScreem)
 const SettingsStack = ({ navigation }) => {
+  const { colors } = useTheme();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -356,11 +338,29 @@ const SettingsStack = ({ navigation }) => {
           left: 0,
           right: 0,
         },
-        headerShown: false,
+        // headerShown: false,
+        headerShadowVisible: false,
+        headerTintColor: colors.primary700,
+        headerStyle: {
+          backgroundColor: colors.secondary700,
+        },
+        headerTitleStyle: {
+          color: colors.primary700,
+        },
+        headerTitleAlign: "center",
         title: null,
       }}
     >
-      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen
+        options={{ title: "設定" }}
+        name="Settings"
+        component={SettingsScreen}
+      />
+      <Stack.Screen
+        options={{ title: "主題設定" }}
+        name="DisplaySetting"
+        component={DisplaySettingScreen}
+      />
     </Stack.Navigator>
   );
 };
