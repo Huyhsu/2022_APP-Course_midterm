@@ -9,11 +9,18 @@ import {
   Image,
   Fab,
   Pressable,
+  Button,
 } from "native-base";
 
+import { useDispatch, useSelector } from "react-redux";
+
 import Item from "../components/Item";
+import { addItem } from "../redux/actions";
 
 const HomeScreen = (props, { navigation }) => {
+  const { itemList } = useSelector((state) => state.item);
+  const dispatch = useDispatch();
+
   return (
     <Box flex={1} bgColor={"#F4F4F4"}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -22,17 +29,13 @@ const HomeScreen = (props, { navigation }) => {
           <Text>{props.number}</Text>
         </Box> */}
         <Center pb={88}>
-          <Item />
-          <Item />
-          {/* <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item /> */}
+          <Button onPress={() => dispatch(addItem({ title: "7414" }))}>
+            ADD
+          </Button>
         </Center>
+        {itemList.items.map((item, index) => (
+          <Item data={item} />
+        ))}
       </ScrollView>
       {/* <Fab
         position="absolute"

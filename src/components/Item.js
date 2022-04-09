@@ -43,7 +43,7 @@ const Item = (props) => {
             <CircleIcon w={12} h={12} color={"#D27373"}></CircleIcon>
             <VStack ml={6}>
               <Text fontSize={"lg"} color={"#024D61"}>
-                行動程式期中作業
+                行動程式期中作業{props.data.title}
               </Text>
               <Text fontSize={"sm"} color={"#888888"}>
                 04/14 (四) 12:30
