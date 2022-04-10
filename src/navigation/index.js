@@ -127,6 +127,8 @@ const MyTab = () => {
         component={CalendarStack}
         options={{
           title: "日曆",
+          headerShown: true,
+          header: (props) => <MyHeader />,
           tabBarIcon: ({ focused }) => (
             <Box>
               {focused ? (

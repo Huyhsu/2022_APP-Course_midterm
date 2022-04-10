@@ -151,6 +151,7 @@ const NoteScreen = ({ navigation }) => {
   const { colorMode } = useColorMode();
   return (
     <Box
+      flex={1}
       _light={{ bgColor: colors.light100 }}
       _dark={{ bgColor: colors.light400 }}
     >
@@ -345,6 +346,7 @@ const NoteScreen = ({ navigation }) => {
                     onPress={() => {
                       setModalVisible(false);
                       setCategory("");
+                      setCategoryIsError(true);
                     }}
                   >
                     取消
@@ -450,6 +452,7 @@ const NoteScreen = ({ navigation }) => {
             <Radio
               value="high"
               mx={1}
+              ml={4}
               _text={{
                 fontSize: "md",
               }}
