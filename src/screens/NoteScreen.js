@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Platform } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import {
@@ -23,7 +23,7 @@ import {
 } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
-import { addCategory } from "../redux/actions";
+import { addCategory, addItem } from "../redux/actions";
 
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
@@ -36,13 +36,13 @@ const NoteScreen = ({ navigation }) => {
   const [theItem, setTheItem] = useState({});
   const createItem = () => {
     let newItem = {
-      itemCategory: category,
-      itemTitle: title,
-      itemNote: note,
-      itemDate: timeText,
-      itemDivide: divide,
+      title: title,
+      note: note,
+      time: timeText,
+      category: category,
+      divide: divide,
     };
-    setTheItem(newItem);
+    dispatch(addItem(newItem));
   };
   // Date Time Picker
   const [date, setDate] = useState(new Date());
@@ -53,13 +53,16 @@ const NoteScreen = ({ navigation }) => {
   const [secondModalVisible, setSecondModalVisible] = useState(false);
   // Title
   const [title, setTitle] = useState("");
+  const [titleIsError, setTitleIsError] = useState(true);
   // Note
   const [note, setNote] = useState("");
   // Date and Time
   const [dateText, setDateText] = useState("");
   const [timeText, setTimeText] = useState("");
+  const [timeIsError, setTimeIsError] = useState(true);
   // Category
   const [category, setCategory] = useState("");
+  const [categoryIsError, setCategoryIsError] = useState(true);
   // Divide
   const [divide, setDevide] = useState("low");
   // 取得日期(設定日期文字)
@@ -112,10 +115,34 @@ const NoteScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const { colorMode } = useColorMode();
 
+  // Check Input Value
+  const [isCheck, setIsCheck] = useState(false);
+  const checkInputValues = () => {
+    title.length == 0 ? setTitleIsError(true) : setTitleIsError(false);
+    timeText.length == 0 ? setTimeIsError(true) : setTimeIsError(false);
+    category.length == 0 ? setCategoryIsError(true) : setCategoryIsError(false);
+    setIsCheck(true);
+    submitItem();
+  };
+  const submitItem = () => {
+    if (!titleIsError && !timeIsError && !categoryIsError) {
+      console.log("DONE!!!!");
+      createItem();
+    } else {
+      console.log("FAIL");
+    }
+  };
+
+  useEffect(() => {
+    if (title.length != 0) setTitleIsError(false);
+    if (timeText.length != 0) setTimeIsError(false);
+    if (category.length != 0) setCategoryIsError(false);
+  }, [title, timeText, category]);
+
   return (
     <Box _light={{ bgColor: colors.light100 }}>
       <ScrollView w={"100%"} px={4} pt={8}>
-        <FormControl isRequired>
+        <FormControl isRequired isInvalid={titleIsError && isCheck}>
           <FormControl.Label
             _text={{
               fontSize: "md",
@@ -125,12 +152,20 @@ const NoteScreen = ({ navigation }) => {
           >
             標題
           </FormControl.Label>
-          <Input placeholder={"輸入標題"} fontSize={"md"} />
+          <Input
+            placeholder={"輸入標題"}
+            fontSize={"md"}
+            value={title}
+            onChangeText={(text) => setTitle(text)}
+          />
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            請輸入標題!
+          </FormControl.ErrorMessage>
         </FormControl>
         <FormControl mt={4}>
           <TextArea placeholder={"添加備註..."} fontSize={"md"} minH={130} />
         </FormControl>
-        <FormControl mt={4} isRequired>
+        <FormControl mt={4} isRequired isInvalid={timeIsError && isCheck}>
           <FormControl.Label
             _text={{
               fontSize: "md",
@@ -155,9 +190,12 @@ const NoteScreen = ({ navigation }) => {
               value={timeText}
             />
           </Pressable>
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            請選擇日期!
+          </FormControl.ErrorMessage>
         </FormControl>
 
-        <FormControl mt={4} isRequired>
+        <FormControl mt={4} isRequired isInvalid={categoryIsError && isCheck}>
           <FormControl.Label
             _text={{
               fontSize: "md",
@@ -281,8 +319,9 @@ const NoteScreen = ({ navigation }) => {
                   flex="1"
                   onPress={() => {
                     setSecondModalVisible(false);
+                    setCategory(newCategory);
                     setNewCategory("");
-                    setModalVisible(!modalVisible);
+                    // setModalVisible(!modalVisible);
                     dispatch(addCategory(newCategory));
                   }}
                 >
@@ -291,6 +330,9 @@ const NoteScreen = ({ navigation }) => {
               </Modal.Footer>
             </Modal.Content>
           </Modal>
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            請選擇一項類別!
+          </FormControl.ErrorMessage>
         </FormControl>
         <FormControl mt={4} isRequired>
           <FormControl.Label
@@ -351,15 +393,16 @@ const NoteScreen = ({ navigation }) => {
             bgColor={colors.green700}
             _text={{ color: colors.primary700, fontSize: "md" }}
             h={12}
-            w={"60%"}
+            w={"50%"}
             mt={16}
             mb={24}
             shadow={4}
-            rounded={16}
+            rounded={5}
             onPress={() => {
-              console.log(theItem.itemCategory);
-              createItem();
+              // console.log(theItem.itemCategory);
+              // createItem();
               // navigation.navigate("HomeTabs");
+              checkInputValues();
             }}
           >
             新增

@@ -223,13 +223,14 @@ const HomeTabs = ({ navigation }) => {
           },
           tabBarItemStyle: {
             width: "auto",
-            paddingHorizontal: 12,
+            paddingHorizontal: 16,
           },
           tabBarPressColor: colors.secondary700,
           tabBarIndicatorStyle: {
             backgroundColor: colors.primary700,
           },
           tabBarLabelStyle: {
+            textTransform: "none",
             fontSize: 16,
           },
         }}

@@ -44,10 +44,10 @@ const Item = (props) => {
             <CircleIcon w={12} h={12} color={colors.medium700} />
             <VStack ml={6}>
               <Text _light={{ color: colors.primary700 }} fontSize={"lg"}>
-                行動程式期中作業{title}
+                {title}
               </Text>
               <Text _light={{ color: colors.light700 }} fontSize={"sm"}>
-                04/14 (四) 12:30{time}
+                {time}
               </Text>
             </VStack>
           </HStack>

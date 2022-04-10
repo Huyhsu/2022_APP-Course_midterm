@@ -30,11 +30,11 @@ const HomeScreen = ({ navigation, currentList }) => {
       flex={1}
       alignItems={"center"}
     >
-      <Button
-        onPress={() => dispatch(addItem({ title: "7414", category: "RB" }))}
+      {/* <Button
+        onPress={() => dispatch(addItem({ title: "7414", category: "test" }))}
       >
         ADD
-      </Button>
+      </Button> */}
       {currentList.length == 0 ? (
         <Text _light={{ color: colors.primary700 }} fontSize={"md"} pt={24}>
           點擊加號新增事項 !
