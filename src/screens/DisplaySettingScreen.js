@@ -8,7 +8,11 @@ const DisplaySettingScreen = () => {
   const { colors } = useTheme();
 
   return (
-    <Box flex={1} _light={{ bgColor: colors.light400 }}>
+    <Box
+      flex={1}
+      _light={{ bgColor: colors.light400 }}
+      _dark={{ bgColor: colors.light400 }}
+    >
       <VStack pt={4} px={4}>
         <HStack
           w={"100%"}
@@ -16,12 +20,12 @@ const DisplaySettingScreen = () => {
           borderRadius={5}
           px={4}
           py={1}
-          _dark={{
-            bg: "blueGray.800",
-            borderColor: "blueGray.500",
-            borderWidth: 0.6,
-          }}
           _light={{ bgColor: colors.light100 }}
+          _dark={{
+            bgColor: colors.light100,
+            borderWidth: "0.6",
+            borderColor: colors.light700,
+          }}
         >
           <HStack alignItems={"center"} space={48} p={0}>
             <Text _light={{ color: colors.primary700 }} fontSize="lg">
@@ -34,6 +38,7 @@ const DisplaySettingScreen = () => {
               onToggle={toggleColorMode}
               accessibilityLabel="display-mode"
               accessibilityHint="light or dark mode"
+              colorScheme="black"
             />
           </HStack>
         </HStack>

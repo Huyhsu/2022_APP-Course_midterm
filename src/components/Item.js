@@ -8,6 +8,7 @@ import {
   Text,
   CircleIcon,
   Pressable,
+  useColorMode,
 } from "native-base";
 import { useTheme } from "@react-navigation/native";
 
@@ -20,8 +21,10 @@ const Item = (props) => {
   const handleClick = () => {
     setClick(!clicked);
   };
-  const { title, time } = props.item;
+  const { title, time, divide } = props.item;
   const { colors } = useTheme();
+  const { colorMode } = useColorMode();
+  let tempTitle = title;
   return (
     <Box
       _light={{ bgColor: colors.light100 }}
@@ -41,12 +44,24 @@ const Item = (props) => {
           justifyContent={"space-between"}
         >
           <HStack alignItems={"center"}>
-            <CircleIcon w={12} h={12} color={colors.medium700} />
+            <CircleIcon
+              w={12}
+              h={12}
+              color={
+                divide == "high"
+                  ? colors.high700
+                  : divide == "medium"
+                  ? colors.medium700
+                  : colors.low700
+              }
+            />
             <VStack ml={6}>
               <Text _light={{ color: colors.primary700 }} fontSize={"lg"}>
-                {title}
+                {tempTitle.length >= 10
+                  ? tempTitle.substring(0, 9) + "..."
+                  : tempTitle}
               </Text>
-              <Text _light={{ color: colors.light700 }} fontSize={"sm"}>
+              <Text color={colors.light700} fontSize={"sm"}>
                 {time}
               </Text>
             </VStack>
@@ -57,19 +72,35 @@ const Item = (props) => {
             }}
           >
             {clicked ? (
-              <Box>
-                <Image
-                  source={require("../icon/icon_checkbox.png")}
-                  alt={"checked_checkbox"}
-                />
-              </Box>
-            ) : (
+              colorMode == "light" ? (
+                <Box>
+                  <Image
+                    source={require("../icon/icon_checkbox.png")}
+                    alt={"checked_checkbox"}
+                  />
+                </Box>
+              ) : (
+                <>
+                  <Image
+                    source={require("../icon/icon_dark_checkbox.png")}
+                    alt={"checked_checkbox"}
+                  />
+                </>
+              )
+            ) : colorMode == "light" ? (
               <>
                 <Image
                   source={require("../icon/icon_checkbox_blank.png")}
                   alt={"blank_checkbox"}
                 />
               </>
+            ) : (
+              <Box>
+                <Image
+                  source={require("../icon/icon_dark_checkbox_blank.png")}
+                  alt={"blank_checkbox"}
+                />
+              </Box>
             )}
           </Pressable>
         </HStack>

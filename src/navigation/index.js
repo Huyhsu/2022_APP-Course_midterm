@@ -60,7 +60,9 @@ const Navigation = () => {
     <NavigationContainer theme={MyTheme}>
       <StatusBar
         barStyle={colorMode == "light" ? "dark-content" : "light-content"}
-        backgroundColor={colorMode == "light" ? colors.secondary700 : "black"}
+        backgroundColor={
+          colorMode == "light" ? colors.secondary700 : colors.secondary700
+        }
       />
       <MyTab />
     </NavigationContainer>
@@ -70,6 +72,7 @@ const Navigation = () => {
 // Tab - MyTab (HomeTabs + CalendarStack + SettingsStack)
 const MyTab = () => {
   const { colors } = useTheme();
+  const { colorMode } = useColorMode();
   return (
     <Tab.Navigator
       initialRouteName="HomeTabs"
@@ -110,10 +113,19 @@ const MyTab = () => {
           tabBarIcon: ({ focused }) => (
             <Box>
               {focused ? (
-                <Image
-                  source={require("../icon/icon_noteadd_actived.png")}
-                  alt={"HomeIcon_actived"}
-                />
+                colorMode == "light" ? (
+                  <Image
+                    source={require("../icon/icon_noteadd_actived.png")}
+                    alt={"HomeIcon_actived"}
+                  />
+                ) : (
+                  <>
+                    <Image
+                      source={require("../icon/icon_dark_noteadd_actived.png")}
+                      alt={"HomeIcon_actived"}
+                    />
+                  </>
+                )
               ) : (
                 <Image
                   source={require("../icon/icon_noteadd.png")}
@@ -132,10 +144,19 @@ const MyTab = () => {
           tabBarIcon: ({ focused }) => (
             <Box>
               {focused ? (
-                <Image
-                  source={require("../icon/icon_calendar_actived.png")}
-                  alt={"CalendarIcon_actived"}
-                />
+                colorMode == "light" ? (
+                  <Image
+                    source={require("../icon/icon_calendar_actived.png")}
+                    alt={"CalendarIcon_actived"}
+                  />
+                ) : (
+                  <>
+                    <Image
+                      source={require("../icon/icon_dark_calendar_actived.png")}
+                      alt={"CalendarIcon_actived"}
+                    />
+                  </>
+                )
               ) : (
                 <Image
                   source={require("../icon/icon_calendar.png")}
@@ -154,10 +175,19 @@ const MyTab = () => {
           tabBarIcon: ({ focused }) => (
             <Box>
               {focused ? (
-                <Image
-                  source={require("../icon/icon_settings_actived.png")}
-                  alt={"SettingsIcon_actived"}
-                />
+                colorMode == "light" ? (
+                  <Image
+                    source={require("../icon/icon_settings_actived.png")}
+                    alt={"SettingsIcon_actived"}
+                  />
+                ) : (
+                  <>
+                    <Image
+                      source={require("../icon/icon_dark_settings_actived.png")}
+                      alt={"SettingsIcon_actived"}
+                    />
+                  </>
+                )
               ) : (
                 <Image
                   source={require("../icon/icon_settings.png")}
@@ -190,17 +220,12 @@ const HomeTabs = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const { colors } = useTheme();
+  const { colorMode } = useColorMode();
   return (
     <>
       {/* <Animated.View style={{ height: ainmateHeaderHeight }}> */}
-      <Pressable
-        onPress={() => {
-          // createNewTab();
-          // dispatch(addCategory());
-        }}
-      >
-        <TodayInfoCard />
-      </Pressable>
+
+      <TodayInfoCard />
 
       {/* </Animated.View> */}
       <TopTab.Navigator
@@ -256,19 +281,46 @@ const HomeTabs = ({ navigation }) => {
       </TopTab.Navigator>
       <Pressable
         position={"absolute"}
-        w={58}
-        h={58}
-        p={4}
-        bgColor={colors.green700}
         rounded={16}
         bottom={4}
         right={4}
         shadow={3}
+        w={58}
+        h={58}
+        justifyContent={"center"}
+        bgColor={colors.green700}
         onPress={() => {
           navigation.navigate("NoteAddStack");
         }}
       >
-        <Image source={require("../icon/icon_add.png")} alt={"add_icon"} />
+        {({ isHovered, isFocused, isPressed }) => (
+          <Center
+            bgColor={
+              isPressed
+                ? colors.light700
+                : isHovered
+                ? colors.light700
+                : colors.green700
+            }
+            w={"100%"}
+            h={"100%"}
+            rounded={16}
+          >
+            {colorMode == "light" ? (
+              <Image
+                source={require("../icon/icon_add.png")}
+                alt={"add_icon"}
+              />
+            ) : (
+              <>
+                <Image
+                  source={require("../icon/icon_dark_add.png")}
+                  alt={"add_icon"}
+                />
+              </>
+            )}
+          </Center>
+        )}
       </Pressable>
     </>
   );
@@ -371,6 +423,7 @@ const SettingsStack = ({ navigation }) => {
 // Stack - NoteAdd (NoteAddScreen)
 const NoteAddStack = ({ navigation }) => {
   const { colors } = useTheme();
+  const { colorMode } = useColorMode();
 
   return (
     <Stack.Navigator
@@ -394,10 +447,19 @@ const NoteAddStack = ({ navigation }) => {
           headerLeft: () => (
             <Pressable onPress={() => navigation.navigate("HomeTabs")}>
               <Center h={16}>
-                <Image
-                  source={require("../icon/icon_back.png")}
-                  alt={"add_icon"}
-                />
+                {colorMode == "light" ? (
+                  <Image
+                    source={require("../icon/icon_back.png")}
+                    alt={"add_icon"}
+                  />
+                ) : (
+                  <>
+                    <Image
+                      source={require("../icon/icon_dark_back.png")}
+                      alt={"add_icon"}
+                    />
+                  </>
+                )}
               </Center>
             </Pressable>
           ),

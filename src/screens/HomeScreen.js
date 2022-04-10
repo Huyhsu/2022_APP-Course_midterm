@@ -37,14 +37,14 @@ const HomeScreen = ({ navigation, currentList }) => {
       </Button> */}
       {currentList.length == 0 ? (
         <Text _light={{ color: colors.primary700 }} fontSize={"md"} pt={24}>
-          點擊加號新增事項 !
+          點擊 + 號新增事項
         </Text>
       ) : (
         <FlatList
           data={currentList}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => item.title + item.category}
+          keyExtractor={(item, index) => item.title + item.category + index}
           contentContainerStyle={{
             paddingBottom: 88,
           }}

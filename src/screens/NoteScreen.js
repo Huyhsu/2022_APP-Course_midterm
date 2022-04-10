@@ -20,6 +20,7 @@ import {
   Radio,
   Modal,
   useColorMode,
+  Divider,
 } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,8 +33,6 @@ const NoteScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const [newCategory, setNewCategory] = useState("");
-
-  const [theItem, setTheItem] = useState({});
   const createItem = () => {
     let newItem = {
       title: title,
@@ -64,7 +63,7 @@ const NoteScreen = ({ navigation }) => {
   const [category, setCategory] = useState("");
   const [categoryIsError, setCategoryIsError] = useState(true);
   // Divide
-  const [divide, setDevide] = useState("low");
+  const [divide, setDivide] = useState("low");
   // 取得日期(設定日期文字)
   const getDate = (currentDate) => {
     let tempDate = new Date(currentDate);
@@ -128,6 +127,7 @@ const NoteScreen = ({ navigation }) => {
     if (!titleIsError && !timeIsError && !categoryIsError) {
       console.log("DONE!!!!");
       createItem();
+      resetForm();
     } else {
       console.log("FAIL");
     }
@@ -139,8 +139,24 @@ const NoteScreen = ({ navigation }) => {
     if (category.length != 0) setCategoryIsError(false);
   }, [title, timeText, category]);
 
+  const resetForm = () => {
+    setTitle("");
+    setNote("");
+    setTimeText("");
+    setCategory("");
+    setDivide("low");
+    setIsCheck(false);
+    setTimeIsError(true);
+    setTimeIsError(true);
+    setCategoryIsError(true);
+    navigation.navigate("HomeTabs");
+  };
+
   return (
-    <Box _light={{ bgColor: colors.light100 }}>
+    <Box
+      _light={{ bgColor: colors.light100 }}
+      _dark={{ bgColor: colors.light400 }}
+    >
       <ScrollView w={"100%"} px={4} pt={8}>
         <FormControl isRequired isInvalid={titleIsError && isCheck}>
           <FormControl.Label
@@ -157,13 +173,21 @@ const NoteScreen = ({ navigation }) => {
             fontSize={"md"}
             value={title}
             onChangeText={(text) => setTitle(text)}
+            bgColor={colors.light100}
           />
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
             請輸入標題!
           </FormControl.ErrorMessage>
         </FormControl>
         <FormControl mt={4}>
-          <TextArea placeholder={"添加備註..."} fontSize={"md"} minH={130} />
+          <TextArea
+            placeholder={"添加備註..."}
+            value={note}
+            onChangeText={(text) => setNote(text)}
+            fontSize={"md"}
+            minH={130}
+            bgColor={colors.light100}
+          />
         </FormControl>
         <FormControl mt={4} isRequired isInvalid={timeIsError && isCheck}>
           <FormControl.Label
@@ -176,19 +200,28 @@ const NoteScreen = ({ navigation }) => {
             日期
           </FormControl.Label>
           <Pressable onPress={() => showMode("date")}>
-            <Input
-              isReadOnly={true}
-              placeholder={"選擇日期"}
-              InputRightElement={
-                <Image
-                  source={require("../icon/icon_calendar.png")}
-                  alt={"calendar_icon"}
-                  mr={2}
-                />
-              }
-              fontSize={"md"}
-              value={timeText}
-            />
+            {({ isHovered, isFocused, isPressed }) => (
+              <Input
+                bgColor={
+                  isPressed
+                    ? colors.light400
+                    : isHovered
+                    ? colors.light400
+                    : colors.light100
+                }
+                isReadOnly={true}
+                placeholder={"選擇日期"}
+                InputRightElement={
+                  <Image
+                    source={require("../icon/icon_calendar.png")}
+                    alt={"calendar_icon"}
+                    mr={2}
+                  />
+                }
+                fontSize={"md"}
+                value={timeText}
+              />
+            )}
           </Pressable>
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
             請選擇日期!
@@ -210,20 +243,29 @@ const NoteScreen = ({ navigation }) => {
               setModalVisible(!modalVisible);
             }}
           >
-            <Input
-              isReadOnly={true}
-              placeholder={"選擇一項類別"}
-              InputRightElement={
-                <Image
-                  source={require("../icon/icon_dropdown.png")}
-                  alt={"calendar_icon"}
-                  mr={2}
-                />
-              }
-              fontSize={"md"}
-              value={category}
-              // placeholderTextColor="#888"
-            />
+            {({ isHovered, isFocused, isPressed }) => (
+              <Input
+                bgColor={
+                  isPressed
+                    ? colors.light400
+                    : isHovered
+                    ? colors.light400
+                    : colors.light100
+                }
+                isReadOnly={true}
+                placeholder={"選擇一項類別"}
+                InputRightElement={
+                  <Image
+                    source={require("../icon/icon_dropdown.png")}
+                    alt={"calendar_icon"}
+                    mr={2}
+                  />
+                }
+                fontSize={"md"}
+                value={category}
+                // placeholderTextColor="#888"
+              />
+            )}
           </Pressable>
           <Modal
             isOpen={modalVisible}
@@ -233,21 +275,24 @@ const NoteScreen = ({ navigation }) => {
             bottom="4"
             size="lg"
           >
-            <Modal.Content>
-              <Modal.CloseButton />
-              <Modal.Header>選擇哪個類別?</Modal.Header>
+            <Modal.Content bgColor={colors.light100}>
+              <Modal.Header _text={{ fontSize: "md", color: colors.dark700 }}>
+                選擇類別
+              </Modal.Header>
               <ScrollView>
                 <Modal.Body>
                   <FormControl mt={4} isRequired>
                     <Radio.Group
-                      name="exampleGroup2"
+                      name="selecCategory"
                       value={category}
                       onChange={(nextValue) => {
                         setCategory(nextValue);
                       }}
                     >
                       {categoryList.categorys.length == 0 ? (
-                        <Text>請先新增一個類別</Text>
+                        <Text fontSize={"md"} color={colors.dark700}>
+                          請先建立一個類別
+                        </Text>
                       ) : (
                         categoryList.categorys.map((value, index) => (
                           <Radio
@@ -256,30 +301,73 @@ const NoteScreen = ({ navigation }) => {
                             mx={1}
                             _text={{ color: colors.dark700, fontSize: "md" }}
                           >
+                            {" "}
                             {value}
                           </Radio>
                         ))
                       )}
                     </Radio.Group>
-                    <FormControl.ErrorMessage>
-                      Something is wrong.
-                    </FormControl.ErrorMessage>
                   </FormControl>
+                  <Pressable
+                    onPress={() => {
+                      setModalVisible(false);
+                      setSecondModalVisible(!secondModalVisible);
+                    }}
+                  >
+                    {({ isHovered, isFocused, isPressed }) => (
+                      <Box
+                        color={colors.dark700}
+                        // bgColor={colors.green700}
+                        bgColor={
+                          isPressed
+                            ? colors.light400
+                            : isHovered
+                            ? colors.light400
+                            : colors.light100
+                        }
+                        borderRadius={5}
+                        px={2}
+                        py={1}
+                        mt={4}
+                      >
+                        <Text
+                          color={colors.primary700}
+                          fontSize={"md"}
+                          fontWeight={"medium"}
+                        >
+                          + 建立新類別
+                        </Text>
+                      </Box>
+                    )}
+                  </Pressable>
                 </Modal.Body>
               </ScrollView>
 
-              <Modal.Footer>
-                <Button
-                  flex="1"
-                  onPress={() => {
-                    setModalVisible(false);
-                    setSecondModalVisible(!secondModalVisible);
-                    // setNewCategory("");
-                    // dispatch(addCategory(newCategory));
-                  }}
-                >
-                  新增
-                </Button>
+              <Modal.Footer bgColor={colors.light100}>
+                <Divider />
+                <Button.Group space={2}>
+                  <Button
+                    variant="ghost"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setModalVisible(false);
+                      setCategory("");
+                    }}
+                  >
+                    取消
+                  </Button>
+                  <Button
+                    // bgColor={colors.green700}
+                    _text={{ color: colors.primary700 }}
+                    bgColor={colors.light100}
+                    onPress={() => {
+                      setModalVisible(false);
+                    }}
+                    isDisabled={category.length == 0}
+                  >
+                    確定
+                  </Button>
+                </Button.Group>
               </Modal.Footer>
             </Modal.Content>
           </Modal>
@@ -291,30 +379,60 @@ const NoteScreen = ({ navigation }) => {
             bottom="4"
             size="lg"
           >
-            <Modal.Content>
+            <Modal.Content bgColor={colors.light100}>
               <Modal.Body>
-                <FormControl isRequired>
+                <FormControl>
                   <FormControl.Label
                     _text={{
                       fontSize: "md",
                       color:
-                        colorMode == "light"
-                          ? colors.primary700
-                          : colors.primary700,
+                        colorMode == "light" ? colors.dark700 : colors.dark700,
                     }}
-                    mt={16}
+                    mt={4}
                   >
-                    新增一個類別
+                    建立新類別
                   </FormControl.Label>
                   <Input
-                    placeholder={"輸入類別名稱"}
+                    placeholder={"類別名稱"}
                     fontSize={"md"}
                     value={newCategory}
                     onChangeText={(text) => setNewCategory(text)}
+                    color={colors.dark700}
                   />
                 </FormControl>
               </Modal.Body>
-              <Modal.Footer>
+              <Modal.Footer bgColor={colors.light100}>
+                <Divider />
+                <Button.Group space={2}>
+                  <Button
+                    variant="ghost"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setSecondModalVisible(false);
+                      setNewCategory("");
+                    }}
+                  >
+                    取消
+                  </Button>
+                  <Button
+                    onPress={() => {
+                      setSecondModalVisible(false);
+                      setCategory(newCategory);
+                      setNewCategory("");
+                      // setModalVisible(!modalVisible);
+                      dispatch(addCategory(newCategory));
+                    }}
+                    _text={{ color: colors.primary700 }}
+                    bgColor={colors.light100}
+                    isDisabled={
+                      newCategory.length == 0 || newCategory[0] == " "
+                    }
+                  >
+                    確定
+                  </Button>
+                </Button.Group>
+              </Modal.Footer>
+              {/* <Modal.Footer>
                 <Button
                   flex="1"
                   onPress={() => {
@@ -327,14 +445,14 @@ const NoteScreen = ({ navigation }) => {
                 >
                   新增
                 </Button>
-              </Modal.Footer>
+              </Modal.Footer> */}
             </Modal.Content>
           </Modal>
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
             請選擇一項類別!
           </FormControl.ErrorMessage>
         </FormControl>
-        <FormControl mt={4} isRequired>
+        <FormControl mt={4}>
           <FormControl.Label
             _text={{
               fontSize: "md",
@@ -350,25 +468,24 @@ const NoteScreen = ({ navigation }) => {
             flexDir={"row"}
             value={divide}
             onChange={(nextValue) => {
-              setDevide(nextValue);
+              setDivide(nextValue);
             }}
           >
             <Radio
               value="high"
               mx={1}
               _text={{
-                color: colors.dark700,
                 fontSize: "md",
               }}
               colorScheme="red"
-              // color={"#D27373"}
+              // color={colors.high700}
             >
               優先
             </Radio>
             <Radio
               value="medium"
-              mx={1}
-              _text={{ color: colors.dark700, fontSize: "md" }}
+              mx={2}
+              _text={{ fontSize: "md" }}
               colorScheme="yellow"
               // color={colors.medium700}
             >
@@ -377,7 +494,7 @@ const NoteScreen = ({ navigation }) => {
             <Radio
               value="low"
               mx={1}
-              _text={{ color: colors.dark700, fontSize: "md" }}
+              _text={{ fontSize: "md" }}
               colorScheme="cyan"
               // color={colors.low700}
             >
@@ -389,24 +506,33 @@ const NoteScreen = ({ navigation }) => {
           </FormControl.ErrorMessage>
         </FormControl>
         <Center>
-          <Button
-            bgColor={colors.green700}
-            _text={{ color: colors.primary700, fontSize: "md" }}
-            h={12}
-            w={"50%"}
-            mt={16}
-            mb={24}
-            shadow={4}
-            rounded={5}
+          <Pressable
+            w={"60%"}
             onPress={() => {
-              // console.log(theItem.itemCategory);
-              // createItem();
-              // navigation.navigate("HomeTabs");
               checkInputValues();
             }}
           >
-            新增
-          </Button>
+            {({ isHovered, isFocused, isPressed }) => (
+              <Center
+                h={12}
+                mt={8}
+                mb={24}
+                shadow={1}
+                rounded={5}
+                bgColor={
+                  isPressed
+                    ? colors.light700
+                    : isHovered
+                    ? colors.light700
+                    : colors.green700
+                }
+              >
+                <Text color={colors.primary700} fontSize={"md"}>
+                  新增
+                </Text>
+              </Center>
+            )}
+          </Pressable>
         </Center>
       </ScrollView>
 

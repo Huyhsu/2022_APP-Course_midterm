@@ -1,9 +1,10 @@
 import React from "react";
-import { Text, HStack, Pressable } from "native-base";
+import { Text, HStack, Pressable, useColorMode } from "native-base";
 import { useTheme } from "@react-navigation/native";
 
 const SettingsOptions = ({ navigation, title, destination }) => {
   const { colors } = useTheme();
+  const { colorMode } = useColorMode();
   return (
     <Pressable
       onPress={() => {
@@ -11,7 +12,12 @@ const SettingsOptions = ({ navigation, title, destination }) => {
       }}
     >
       <HStack
-        _light={{ bg: colors.light100 }}
+        _light={{ bgColor: colors.light100 }}
+        _dark={{
+          bgColor: colors.light100,
+          borderWidth: "0.6",
+          borderColor: colors.light700,
+        }}
         px={4}
         py={14}
         mt={2}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Center, Input, Image } from "native-base";
+import { Box, Center, Input, Image, useColorMode } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 
@@ -8,10 +8,11 @@ LogBox.ignoreLogs(["NativeBase:"]);
 
 const MyHeader = (props) => {
   const { colors } = useTheme();
+  const { colorMode } = useColorMode();
   return (
     <SafeAreaView>
       <Box>
-        <Center _light={{ bgColor: colors.secondary700 }} h={16}>
+        <Center bgColor={colors.secondary700} h={16}>
           <Input
             _light={{
               color: colors.dark700,
@@ -19,7 +20,7 @@ const MyHeader = (props) => {
               placeholderTextColor: colors.light700,
             }}
             _dark={{
-              color: colors.dark700,
+              color: colors.primary700,
               bgColor: colors.light100,
               placeholderTextColor: colors.light700,
             }}
@@ -31,10 +32,17 @@ const MyHeader = (props) => {
             borderRadius={4}
             placeholder="搜尋..."
             InputLeftElement={
-              <Image
-                source={require("../icon/icon_search.png")}
-                alt={"search_icon"}
-              />
+              colorMode == "light" ? (
+                <Image
+                  source={require("../icon/icon_search.png")}
+                  alt={"search_icon"}
+                />
+              ) : (
+                <Image
+                  source={require("../icon/icon_dark_search.png")}
+                  alt={"search_icon"}
+                />
+              )
             }
           />
         </Center>
