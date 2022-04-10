@@ -1,8 +1,6 @@
 import {
   ADD_ITEM,
   REMOVE_ITEM,
-  ADD_TAB,
-  REMOVE_TAB,
   ADD_CATEGORY,
   REMOVE_CATEGORY,
 } from "../constants";
@@ -19,14 +17,6 @@ export const addItem = (item) => (dispatch) => {
 export const addCategory = (category) => (dispatch) => {
   dispatch({
     type: ADD_CATEGORY,
-    payload: category,
-  });
-};
-
-// ------- Tab
-export const addTab = (category) => (dispatch) => {
-  dispatch({
-    type: ADD_TAB,
     payload: category,
   });
 };

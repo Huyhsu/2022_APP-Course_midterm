@@ -3,10 +3,8 @@ import { Platform } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import {
   Box,
-  HStack,
   Text,
   Input,
-  Heading,
   Image,
   FormControl,
   TextArea,
@@ -16,22 +14,23 @@ import {
   KeyboardAvoidingView,
   Center,
   ScrollView,
-  VStack,
   Radio,
   Modal,
   useColorMode,
   Divider,
 } from "native-base";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
+import DateTimePicker from "@react-native-community/datetimepicker";
+
 import { addCategory, addItem } from "../redux/actions";
 
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
 const NoteScreen = ({ navigation }) => {
+  // State
   const { categoryList } = useSelector((state) => state.item);
   const dispatch = useDispatch();
-
+  // New Item Category
   const [newCategory, setNewCategory] = useState("");
   const createItem = () => {
     let newItem = {
@@ -89,7 +88,7 @@ const NoteScreen = ({ navigation }) => {
       tempDate.getMinutes();
     setTimeText(dateText + fTime);
   };
-  // Date Time Picker Display (set date then time)
+  // Date Time Picker Display (set date then set time)
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
@@ -110,10 +109,6 @@ const NoteScreen = ({ navigation }) => {
     setShow(true);
     setMode(currentMode);
   };
-
-  const { colors } = useTheme();
-  const { colorMode } = useColorMode();
-
   // Check Input Value
   const [isCheck, setIsCheck] = useState(false);
   const checkInputValues = () => {
@@ -123,6 +118,7 @@ const NoteScreen = ({ navigation }) => {
     setIsCheck(true);
     submitItem();
   };
+  // 提交輸入
   const submitItem = () => {
     if (!titleIsError && !timeIsError && !categoryIsError) {
       console.log("DONE!!!!");
@@ -132,13 +128,13 @@ const NoteScreen = ({ navigation }) => {
       console.log("FAIL");
     }
   };
-
+  // 修正輸入後關閉錯誤提示
   useEffect(() => {
     if (title.length != 0) setTitleIsError(false);
     if (timeText.length != 0) setTimeIsError(false);
     if (category.length != 0) setCategoryIsError(false);
   }, [title, timeText, category]);
-
+  // 重設輸入
   const resetForm = () => {
     setTitle("");
     setNote("");
@@ -151,7 +147,8 @@ const NoteScreen = ({ navigation }) => {
     setCategoryIsError(true);
     navigation.navigate("HomeTabs");
   };
-
+  const { colors } = useTheme();
+  const { colorMode } = useColorMode();
   return (
     <Box
       _light={{ bgColor: colors.light100 }}
@@ -227,7 +224,6 @@ const NoteScreen = ({ navigation }) => {
             請選擇日期!
           </FormControl.ErrorMessage>
         </FormControl>
-
         <FormControl mt={4} isRequired isInvalid={categoryIsError && isCheck}>
           <FormControl.Label
             _text={{
@@ -263,7 +259,6 @@ const NoteScreen = ({ navigation }) => {
                 }
                 fontSize={"md"}
                 value={category}
-                // placeholderTextColor="#888"
               />
             )}
           </Pressable>
@@ -271,7 +266,6 @@ const NoteScreen = ({ navigation }) => {
             isOpen={modalVisible}
             onClose={() => setModalVisible(false)}
             avoidKeyboard
-            // justifyContent="flex-end"
             bottom="4"
             size="lg"
           >
@@ -317,7 +311,6 @@ const NoteScreen = ({ navigation }) => {
                     {({ isHovered, isFocused, isPressed }) => (
                       <Box
                         color={colors.dark700}
-                        // bgColor={colors.green700}
                         bgColor={
                           isPressed
                             ? colors.light400
@@ -357,7 +350,6 @@ const NoteScreen = ({ navigation }) => {
                     取消
                   </Button>
                   <Button
-                    // bgColor={colors.green700}
                     _text={{ color: colors.primary700 }}
                     bgColor={colors.light100}
                     onPress={() => {
@@ -375,7 +367,6 @@ const NoteScreen = ({ navigation }) => {
             isOpen={secondModalVisible}
             onClose={() => setSecondModalVisible(false)}
             avoidKeyboard
-            // justifyContent="flex-end"
             bottom="4"
             size="lg"
           >
@@ -419,7 +410,6 @@ const NoteScreen = ({ navigation }) => {
                       setSecondModalVisible(false);
                       setCategory(newCategory);
                       setNewCategory("");
-                      // setModalVisible(!modalVisible);
                       dispatch(addCategory(newCategory));
                     }}
                     _text={{ color: colors.primary700 }}
@@ -432,20 +422,6 @@ const NoteScreen = ({ navigation }) => {
                   </Button>
                 </Button.Group>
               </Modal.Footer>
-              {/* <Modal.Footer>
-                <Button
-                  flex="1"
-                  onPress={() => {
-                    setSecondModalVisible(false);
-                    setCategory(newCategory);
-                    setNewCategory("");
-                    // setModalVisible(!modalVisible);
-                    dispatch(addCategory(newCategory));
-                  }}
-                >
-                  新增
-                </Button>
-              </Modal.Footer> */}
             </Modal.Content>
           </Modal>
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>

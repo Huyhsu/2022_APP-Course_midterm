@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, HStack, VStack } from "native-base";
 import { useTheme } from "@react-navigation/native";
+import { Box, Text, HStack, VStack } from "native-base";
 
 import { getCurrentTime } from "../utils";
 
@@ -18,13 +18,7 @@ const TodayInfoCard = () => {
   }, []);
   const { colors } = useTheme();
   return (
-    <Box
-      _light={{ bgColor: colors.light100 }}
-      _dark={{ bgColor: colors.light100 }}
-      h={32}
-      px={"10%"}
-      py={2}
-    >
+    <Box bgColor={colors.light100} h={32} px={"10%"} py={2}>
       <HStack alignItems={"flex-end"} pt={2} w={"80%"}>
         <VStack alignItems={"center"}>
           <Text _light={{ color: colors.primary700 }} fontSize={"md"}>

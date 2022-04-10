@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTheme } from "@react-navigation/native";
 import {
   Box,
   Center,
@@ -10,17 +11,18 @@ import {
   Pressable,
   useColorMode,
 } from "native-base";
-import { useTheme } from "@react-navigation/native";
 
 import { LogBox } from "react-native";
 LogBox.ignoreLogs(["NativeBase:"]);
 
 const Item = (props) => {
   // Check
+  // Todo: 待更正
   const [clicked, setClick] = useState(false);
   const handleClick = () => {
     setClick(!clicked);
   };
+  // 顯示 title, time, divide 用
   const { title, time, divide } = props.item;
   const { colors } = useTheme();
   const { colorMode } = useColorMode();

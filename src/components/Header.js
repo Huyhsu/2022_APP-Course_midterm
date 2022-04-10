@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Center, Input, Image, useColorMode } from "native-base";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Box, Center, Input, Image, useColorMode } from "native-base";
 
 import { LogBox } from "react-native";
 LogBox.ignoreLogs(["NativeBase:"]);

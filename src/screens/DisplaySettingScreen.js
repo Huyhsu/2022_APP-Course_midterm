@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Switch, HStack, VStack, Text, useColorMode } from "native-base";
 import { useTheme } from "@react-navigation/native";
+import { Box, Switch, HStack, VStack, Text, useColorMode } from "native-base";
 
 const DisplaySettingScreen = () => {
   // Color Mode
   const { colorMode, toggleColorMode } = useColorMode();
   const { colors } = useTheme();
-
   return (
     <Box
       flex={1}

@@ -1,61 +1,47 @@
-import React, { useState, useCallback, useMemo } from "react";
-import { useWindowDimensions } from "react-native";
-import {
-  HStack,
-  VStack,
-  Text,
-  Box,
-  Image,
-  LayoutProps,
-  Pressable,
-  Button,
-  Center,
-  useColorMode,
-  StatusBar,
-} from "native-base";
+import React from "react";
 import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
+import {
+  Box,
+  Image,
+  Pressable,
+  Center,
+  useColorMode,
+  StatusBar,
+} from "native-base";
 import { useDispatch, useSelector } from "react-redux";
-
+import Animated from "react-native-reanimated";
+// Screens
 import HomeScreen from "../screens/HomeScreen";
 import CalendarScreen from "../screens/CalendarScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import DisplaySettingScreen from "../screens/DisplaySettingScreen";
 import NoteScreen from "../screens/NoteScreen";
-
+// Components
 import TodayInfoCard from "../components/TodayInfoCard";
 import MyHeader from "../components/Header";
-import {
-  SafeAreaProvider,
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import Animated, { set } from "react-native-reanimated";
-import { addCategory } from "../redux/actions";
-
+// Theme
 import { lightTheme, darkTheme } from "../Theme";
-import DisplaySettingScreen from "../screens/DisplaySettingScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 
-const INFO_HEADER_HEIGHT = 128;
-const MIN_HEIGHT = 0;
-let AnimatedHeaderValue = new Animated.Value(0);
-const ainmateHeaderHeight = AnimatedHeaderValue.interpolate({
-  inputRange: [0, INFO_HEADER_HEIGHT - MIN_HEIGHT],
-  outputRange: [INFO_HEADER_HEIGHT, MIN_HEIGHT],
-  extrapolate: "clamp",
-});
+// const INFO_HEADER_HEIGHT = 128;
+// const MIN_HEIGHT = 0;
+// let AnimatedHeaderValue = new Animated.Value(0);
+// const ainmateHeaderHeight = AnimatedHeaderValue.interpolate({
+//   inputRange: [0, INFO_HEADER_HEIGHT - MIN_HEIGHT],
+//   outputRange: [INFO_HEADER_HEIGHT, MIN_HEIGHT],
+//   extrapolate: "clamp",
+// });
 
 const Navigation = () => {
   const { colorMode } = useColorMode();
   const MyTheme = colorMode == "light" ? lightTheme : darkTheme;
   const colors = MyTheme.colors;
-
   return (
     <NavigationContainer theme={MyTheme}>
       <StatusBar
@@ -77,12 +63,12 @@ const MyTab = () => {
     <Tab.Navigator
       initialRouteName="HomeTabs"
       screenOptions={{
-        // safeAreaInsets: {
-        //   top: 0,
-        //   bottom: 0,
-        //   left: 0,
-        //   right: 0,
-        // },
+        safeAreaInsets: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
         headerShown: false,
         tabBarStyle: {
           height: 56,
@@ -214,7 +200,7 @@ const MyTab = () => {
   );
 };
 
-// Top Tab - HomeTabs (Many Stacks)
+// Top Tab - HomeTabs (Many Stacks) with FAB
 const HomeTabs = ({ navigation }) => {
   const { itemList, categoryList } = useSelector((state) => state.item);
   const dispatch = useDispatch();
@@ -340,15 +326,9 @@ const HomeStack = (parentProps, { navigation }) => {
         initialRouteName: "Home",
         headerShown: false,
         headerShadowVisible: false,
-        // header: (props) => <MyHeader />,
-        // headerStyle: {
-        //   height: 24,
-        //   backgroundColor: "#E8F3FF",
-        // },
         title: null,
       }}
     >
-      {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
       <Stack.Screen
         name="Home"
         children={(props) => <HomeScreen {...parentProps} />}
@@ -424,7 +404,6 @@ const SettingsStack = ({ navigation }) => {
 const NoteAddStack = ({ navigation }) => {
   const { colors } = useTheme();
   const { colorMode } = useColorMode();
-
   return (
     <Stack.Navigator
       screenOptions={{

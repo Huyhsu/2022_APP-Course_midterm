@@ -33,7 +33,7 @@ export const darkTheme = {
     ...DarkTheme.colors,
     // light100: "#242525",
     light100: "#3A3B3C",
-    light400: "#18191a",
+    light400: "#18191A",
     light700: "#888888",
     primary700: "#E4E6EB",
     green700: "#71857B",

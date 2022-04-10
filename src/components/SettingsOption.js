@@ -1,10 +1,9 @@
 import React from "react";
-import { Text, HStack, Pressable, useColorMode } from "native-base";
 import { useTheme } from "@react-navigation/native";
+import { Text, HStack, Pressable } from "native-base";
 
 const SettingsOptions = ({ navigation, title, destination }) => {
   const { colors } = useTheme();
-  const { colorMode } = useColorMode();
   return (
     <Pressable
       onPress={() => {
