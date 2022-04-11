@@ -1,12 +1,12 @@
 import React from "react";
 import { useTheme } from "@react-navigation/native";
-import { Box, Text, FlatList } from "native-base";
+import { Box, Text, FlatList, Button } from "native-base";
 
 import Item from "../components/Item";
 
 const HomeScreen = ({ navigation, currentList }) => {
   const { colors } = useTheme();
-  const renderItem = ({ item }) => <Item item={item} />;
+  const renderItem = ({ item }) => <Item item={item} navigation={navigation} />;
   return (
     <Box
       _light={{ bgColor: colors.light400 }}
@@ -14,9 +14,10 @@ const HomeScreen = ({ navigation, currentList }) => {
       flex={1}
       alignItems={"center"}
     >
+      {/* <Button onPress={() => navigation.navigate("EditStack")}>123</Button> */}
       {currentList.length == 0 ? (
         <Text _light={{ color: colors.primary700 }} fontSize={"md"} pt={24}>
-          點擊 + 號新增事項
+          點擊 + 號以新增項目
         </Text>
       ) : (
         <FlatList

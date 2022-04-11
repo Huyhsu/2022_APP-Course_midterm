@@ -19,6 +19,7 @@ import CalendarScreen from "../screens/CalendarScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import DisplaySettingScreen from "../screens/DisplaySettingScreen";
 import NoteScreen from "../screens/NoteScreen";
+import EditScreen from "../screens/EditScreen";
 // Components
 import TodayInfoCard from "../components/TodayInfoCard";
 import MyHeader from "../components/Header";
@@ -198,6 +199,18 @@ const MyTab = () => {
           },
         }}
       />
+      <Tab.Screen
+        name="EditStack"
+        component={EditStack}
+        options={({ route }) => ({
+          tabBarButton: () => null,
+          tabBarIcon: () => null,
+          title: "",
+          tabBarStyle: {
+            display: "none",
+          },
+        })}
+      />
     </Tab.Navigator>
   );
 };
@@ -250,7 +263,9 @@ const HomeTabs = ({ navigation }) => {
       >
         <TopTab.Screen
           name="所有"
-          children={(props) => <HomeStack currentList={itemList.items} />}
+          children={(props) => (
+            <HomeStack currentList={itemList.items} {...props} />
+          )}
         />
         {categoryList.categorys.map((category, index) => {
           let currentCategoryItemList = [
@@ -261,7 +276,7 @@ const HomeTabs = ({ navigation }) => {
               key={category + index}
               name={category}
               children={(props) => (
-                <HomeStack currentList={currentCategoryItemList} />
+                <HomeStack currentList={currentCategoryItemList} {...props} />
               )}
             />
           );
@@ -333,12 +348,8 @@ const HomeStack = (parentProps, { navigation }) => {
     >
       <Stack.Screen
         name="Home"
-        children={(props) => <HomeScreen {...parentProps} />}
+        children={() => <HomeScreen {...parentProps} />}
       />
-      {/* <Stack.Screen
-        name="Note"
-        children={(props) => <NoteScreen {...parentProps} />}
-      /> */}
     </Stack.Navigator>
   );
 };
@@ -425,6 +436,62 @@ const NoteAddStack = ({ navigation }) => {
         options={{
           headerShown: true,
           title: "新增",
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.navigate("HomeTabs")}>
+              <Center h={16}>
+                {colorMode == "light" ? (
+                  <Image
+                    source={require("../icon/icon_back.png")}
+                    alt={"add_icon"}
+                  />
+                ) : (
+                  <>
+                    <Image
+                      source={require("../icon/icon_dark_back.png")}
+                      alt={"add_icon"}
+                    />
+                  </>
+                )}
+              </Center>
+            </Pressable>
+          ),
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: colors.secondary700,
+          },
+          headerTitleStyle: {
+            color: colors.primary700,
+            fontSize: 18,
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+// Stack - Edit (EditScreen)
+const EditStack = ({ navigation }) => {
+  const { colors } = useTheme();
+  const { colorMode } = useColorMode();
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        safeAreaInsets: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
+        headerShown: false,
+        title: null,
+      }}
+    >
+      <Stack.Screen
+        name="Edit"
+        component={EditScreen}
+        options={{
+          headerShown: true,
+          title: "確認",
           headerLeft: () => (
             <Pressable onPress={() => navigation.navigate("HomeTabs")}>
               <Center h={16}>

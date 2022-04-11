@@ -1,17 +1,20 @@
 import {
   ADD_ITEM,
   REMOVE_ITEM,
+  UPDATE_ITEM,
   ADD_CATEGORY,
   REMOVE_CATEGORY,
 } from "../constants";
 
 const initialState = {
+  // item template
   item: {
     title: "",
     note: "",
     time: "",
     category: "",
     divide: "",
+    done: "",
   },
   itemList: {
     items: [],
@@ -33,6 +36,16 @@ export const itemReducer = (state = initialState, action) => {
       return {
         ...state,
         categoryList: { ...state.categoryList, categorys: newCategorys },
+      };
+    case UPDATE_ITEM:
+      const updatedItem = action.payload.updatedItem;
+      const itemIndex = action.payload.itemIndex;
+      const currentItems = [...state.itemList.items];
+      currentItems[itemIndex] = updatedItem;
+      const updatedItems = [...currentItems];
+      return {
+        ...state,
+        itemList: { ...state.itemList, items: updatedItems },
       };
     default:
       return state;

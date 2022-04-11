@@ -22,28 +22,42 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-import { addCategory, addItem } from "../redux/actions";
+import { addCategory, updateItem } from "../redux/actions";
 
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
-const NoteScreen = ({ navigation }) => {
+const EditScreen = ({ navigation, route: { params } }) => {
   // State
-  const { categoryList } = useSelector((state) => state.item);
+  const { categoryList, itemList } = useSelector((state) => state.item);
   const dispatch = useDispatch();
+  // Initial Item
+  const { title, note, time, category, divide, done } = params;
+  const initialItem = { ...params };
+  // Edit Item
+  const editItem = () => {
+    let editedItem = {
+      title: currentTitle,
+      note: currentNote,
+      time: timeText,
+      category: currentCategory,
+      divide: currentDivide,
+      done: done,
+    };
+    const itemIndex = itemList.items.findIndex(
+      (value) =>
+        value.title == title &&
+        value.time == time &&
+        value.category == category &&
+        value.divide == divide &&
+        value.note == note
+    );
+    if (itemIndex == -1) {
+      console.log("Error!! Can't find the item to edit!!");
+    }
+    dispatch(updateItem(editedItem, itemIndex));
+  };
   // New Item Category
   const [newCategory, setNewCategory] = useState("");
-  // Create New Item
-  const createItem = () => {
-    let newItem = {
-      title: title,
-      note: note,
-      time: timeText,
-      category: category,
-      divide: divide,
-      done: false,
-    };
-    dispatch(addItem(newItem));
-  };
   // Date Time Picker
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
@@ -52,19 +66,19 @@ const NoteScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [secondModalVisible, setSecondModalVisible] = useState(false);
   // Title
-  const [title, setTitle] = useState("");
+  const [currentTitle, setCurrentTitle] = useState(title);
   const [titleIsError, setTitleIsError] = useState(true);
   // Note
-  const [note, setNote] = useState("");
+  const [currentNote, setCurrentNote] = useState(note);
   // Date and Time
   const [dateText, setDateText] = useState("");
-  const [timeText, setTimeText] = useState("");
+  const [timeText, setTimeText] = useState(time);
   const [timeIsError, setTimeIsError] = useState(true);
   // Category
-  const [category, setCategory] = useState("");
+  const [currentCategory, setCurrentCategory] = useState(category);
   const [categoryIsError, setCategoryIsError] = useState(true);
   // Divide
-  const [divide, setDivide] = useState("low");
+  const [currentDivide, setCurrentDivide] = useState(divide);
   // 取得日期(設定日期文字)
   const getDate = (currentDate) => {
     let tempDate = new Date(currentDate);
@@ -114,36 +128,46 @@ const NoteScreen = ({ navigation }) => {
   // Check Input Value
   const [isCheck, setIsCheck] = useState(false);
   const checkInputValues = () => {
-    // 因為一開始判斷預設輸入為錯誤，多設定 Check 讓第一次顯示上不為錯誤
     setIsCheck(true);
     submitItem();
   };
   // 提交輸入
   const submitItem = () => {
     if (!titleIsError && !timeIsError && !categoryIsError) {
-      console.log("ADD NEW ITEM !");
-      createItem();
+      console.log("UPDATE ITEM !");
+      editItem();
       resetForm();
     } else {
-      console.log("FAIL TO ADD NEW ITEM !");
+      console.log("FAIL TO UPDATE ITEM");
     }
   };
   useEffect(() => {
-    title.length != 0 ? setTitleIsError(false) : setTitleIsError(true);
+    currentTitle.length != 0 ? setTitleIsError(false) : setTitleIsError(true);
     timeText.length != 0 ? setTimeIsError(false) : setTimeIsError(true);
-    category.length != 0 ? setCategoryIsError(false) : setCategoryIsError(true);
-  }, [title, timeText, category]);
+    currentCategory.length != 0
+      ? setCategoryIsError(false)
+      : setCategoryIsError(true);
+  }, [currentTitle, timeText, currentCategory]);
+  // 根據不同的 item 呈現對應資料
+  useEffect(() => {
+    setCurrentTitle(title);
+    setCurrentNote(note);
+    setTimeText(time);
+    setCurrentCategory(category);
+    setCurrentDivide(divide);
+  }, [params]);
   // 重設輸入並回到 HomeTabs
   const resetForm = () => {
-    setTitle("");
-    setNote("");
-    setTimeText("");
-    setCategory("");
-    setDivide("low");
-    setIsCheck(false);
-    setTitleIsError(true);
-    setTimeIsError(true);
-    setCategoryIsError(true);
+    setCurrentTitle(title);
+    setCurrentNote(note);
+    setTimeText(time);
+    setCurrentCategory(category);
+    setCurrentDivide(divide);
+    // 注意跟 note screen 不同
+    setIsCheck(true);
+    setTitleIsError(false);
+    setTimeIsError(false);
+    setCategoryIsError(false);
     navigation.navigate("HomeTabs");
   };
   const { colors } = useTheme();
@@ -166,10 +190,11 @@ const NoteScreen = ({ navigation }) => {
             標題
           </FormControl.Label>
           <Input
-            placeholder={"輸入標題"}
+            placeholder={"更改標題"}
             fontSize={"md"}
-            value={title}
-            onChangeText={(text) => setTitle(text)}
+            defaultValue={title}
+            value={currentTitle}
+            onChangeText={(text) => setCurrentTitle(text)}
             bgColor={colors.light100}
           />
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -179,8 +204,9 @@ const NoteScreen = ({ navigation }) => {
         <FormControl mt={4}>
           <TextArea
             placeholder={"添加備註..."}
-            value={note}
-            onChangeText={(text) => setNote(text)}
+            defaultValue={note}
+            value={currentNote}
+            onChangeText={(text) => setCurrentNote(text)}
             fontSize={"md"}
             minH={130}
             bgColor={colors.light100}
@@ -217,6 +243,7 @@ const NoteScreen = ({ navigation }) => {
                 }
                 fontSize={"md"}
                 value={timeText}
+                defaultValue={time}
               />
             )}
           </Pressable>
@@ -258,7 +285,8 @@ const NoteScreen = ({ navigation }) => {
                   />
                 }
                 fontSize={"md"}
-                value={category}
+                value={currentCategory}
+                defaultValue={category}
               />
             )}
           </Pressable>
@@ -278,9 +306,10 @@ const NoteScreen = ({ navigation }) => {
                   <FormControl mt={4} isRequired>
                     <Radio.Group
                       name="selecCategory"
-                      value={category}
+                      value={currentCategory}
+                      defaultValue={category}
                       onChange={(nextValue) => {
-                        setCategory(nextValue);
+                        setCurrentCategory(nextValue);
                       }}
                     >
                       {categoryList.categorys.length == 0 ? (
@@ -344,7 +373,7 @@ const NoteScreen = ({ navigation }) => {
                     colorScheme="blueGray"
                     onPress={() => {
                       setModalVisible(false);
-                      setCategory("");
+                      setCurrentCategory("");
                       setCategoryIsError(true);
                     }}
                   >
@@ -409,7 +438,7 @@ const NoteScreen = ({ navigation }) => {
                   <Button
                     onPress={() => {
                       setSecondModalVisible(false);
-                      setCategory(newCategory);
+                      setCurrentCategory(newCategory);
                       setNewCategory("");
                       dispatch(addCategory(newCategory));
                     }}
@@ -443,9 +472,9 @@ const NoteScreen = ({ navigation }) => {
             defaultValue="low"
             name="exampleGroup"
             flexDir={"row"}
-            value={divide}
+            value={currentDivide}
             onChange={(nextValue) => {
-              setDivide(nextValue);
+              setCurrentDivide(nextValue);
             }}
           >
             <Radio
@@ -506,7 +535,7 @@ const NoteScreen = ({ navigation }) => {
                 }
               >
                 <Text color={colors.primary700} fontSize={"md"}>
-                  新增
+                  確認
                 </Text>
               </Center>
             )}
@@ -528,4 +557,4 @@ const NoteScreen = ({ navigation }) => {
   );
 };
 
-export default NoteScreen;
+export default EditScreen;

@@ -11,21 +11,39 @@ import {
   Pressable,
   useColorMode,
 } from "native-base";
+import { useDispatch, useSelector } from "react-redux";
 
 import { LogBox } from "react-native";
+import { updateItem } from "../redux/actions";
 LogBox.ignoreLogs(["NativeBase:"]);
 
-const Item = (props) => {
-  // Check
-  // Todo: 待更正
-  const [clicked, setClick] = useState(false);
+const Item = ({ item, item: { title, time, divide, done }, navigation }) => {
+  // State
+  const { itemList } = useSelector((state) => state.item);
+  const dispatch = useDispatch();
+  // 處理點擊
   const handleClick = () => {
-    setClick(!clicked);
+    checkItemValue();
   };
-  // 顯示 title, time, divide 用
-  const { title, time, divide } = props.item;
+  // 暴力找出相同物件之 index, 並呼叫 updateItem
+  const checkItemValue = () => {
+    const itemIndex = itemList.items.findIndex(
+      (value) =>
+        value.title == item.title &&
+        value.time == item.time &&
+        value.category == item.category &&
+        value.divide == item.divide &&
+        value.note == item.note
+    );
+    if (itemIndex == -1) {
+      console.log("Error!! Can't find the item to update!!");
+    }
+    const updatedItem = { ...item, done: !item.done };
+    dispatch(updateItem(updatedItem, itemIndex));
+  };
   const { colors } = useTheme();
   const { colorMode } = useColorMode();
+  // 處理過長標題
   let tempTitle = title;
   return (
     <Box
@@ -45,35 +63,42 @@ const Item = (props) => {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <HStack alignItems={"center"}>
-            <CircleIcon
-              w={12}
-              h={12}
-              color={
-                divide == "high"
-                  ? colors.high700
-                  : divide == "medium"
-                  ? colors.medium700
-                  : colors.low700
-              }
-            />
-            <VStack ml={6}>
-              <Text _light={{ color: colors.primary700 }} fontSize={"lg"}>
-                {tempTitle.length >= 10
-                  ? tempTitle.substring(0, 9) + "..."
-                  : tempTitle}
-              </Text>
-              <Text color={colors.light700} fontSize={"sm"}>
-                {time}
-              </Text>
-            </VStack>
-          </HStack>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("EditStack", { screen: "Edit", params: item })
+            }
+          >
+            <HStack alignItems={"center"}>
+              <CircleIcon
+                w={12}
+                h={12}
+                color={
+                  divide == "high"
+                    ? colors.high700
+                    : divide == "medium"
+                    ? colors.medium700
+                    : colors.low700
+                }
+              />
+              <VStack ml={6}>
+                <Text _light={{ color: colors.primary700 }} fontSize={"lg"}>
+                  {tempTitle.length >= 10
+                    ? tempTitle.substring(0, 9) + "..."
+                    : tempTitle}
+                </Text>
+                <Text color={colors.light700} fontSize={"sm"}>
+                  {time}
+                </Text>
+              </VStack>
+            </HStack>
+          </Pressable>
+
           <Pressable
             onPress={() => {
               handleClick();
             }}
           >
-            {clicked ? (
+            {done ? (
               colorMode == "light" ? (
                 <Box>
                   <Image
