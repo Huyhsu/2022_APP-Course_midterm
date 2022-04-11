@@ -4,6 +4,12 @@ import {
   UPDATE_ITEM,
   ADD_CATEGORY,
   REMOVE_CATEGORY,
+  SET_EDIT_ITEM,
+  UPDATE_EDIT_ITEM_TITLE,
+  UPDATE_EDIT_ITEM_NOTE,
+  UPDATE_EDIT_ITEM_TIME,
+  UPDATE_EDIT_ITEM_CATEGORY,
+  UPDATE_EDIT_ITEM_DIVIDE,
 } from "../constants";
 
 const initialState = {
@@ -21,6 +27,14 @@ const initialState = {
   },
   categoryList: {
     categorys: [],
+  },
+  currentEditItem: {
+    title: "",
+    note: "",
+    time: "",
+    category: "",
+    divide: "",
+    done: "",
   },
 };
 
@@ -46,6 +60,51 @@ export const itemReducer = (state = initialState, action) => {
       return {
         ...state,
         itemList: { ...state.itemList, items: updatedItems },
+      };
+    case SET_EDIT_ITEM:
+      const shouldEditItem = action.payload;
+      return {
+        ...state,
+        currentEditItem: { ...shouldEditItem },
+      };
+    case UPDATE_EDIT_ITEM_TITLE:
+      const shouldEditItemTitle = action.payload;
+      return {
+        ...state,
+        currentEditItem: {
+          ...state.currentEditItem,
+          title: shouldEditItemTitle,
+        },
+      };
+    case UPDATE_EDIT_ITEM_NOTE:
+      const shouldEditItemNote = action.payload;
+      return {
+        ...state,
+        currentEditItem: { ...state.currentEditItem, note: shouldEditItemNote },
+      };
+    case UPDATE_EDIT_ITEM_TIME:
+      const shouldEditItemTime = action.payload;
+      return {
+        ...state,
+        currentEditItem: { ...state.currentEditItem, time: shouldEditItemTime },
+      };
+    case UPDATE_EDIT_ITEM_CATEGORY:
+      const shouldEditItemCategory = action.payload;
+      return {
+        ...state,
+        currentEditItem: {
+          ...state.currentEditItem,
+          category: shouldEditItemCategory,
+        },
+      };
+    case UPDATE_EDIT_ITEM_DIVIDE:
+      const shouldEditItemDivide = action.payload;
+      return {
+        ...state,
+        currentEditItem: {
+          ...state.currentEditItem,
+          divide: shouldEditItemDivide,
+        },
       };
     default:
       return state;

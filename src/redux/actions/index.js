@@ -4,6 +4,12 @@ import {
   ADD_CATEGORY,
   REMOVE_CATEGORY,
   UPDATE_ITEM,
+  SET_EDIT_ITEM,
+  UPDATE_EDIT_ITEM_TITLE,
+  UPDATE_EDIT_ITEM_NOTE,
+  UPDATE_EDIT_ITEM_TIME,
+  UPDATE_EDIT_ITEM_CATEGORY,
+  UPDATE_EDIT_ITEM_DIVIDE,
 } from "../constants";
 
 // ------- Item
@@ -33,5 +39,47 @@ export const updateItem = (updatedItem, itemIndex) => (dispatch) => {
   dispatch({
     type: UPDATE_ITEM,
     payload: { updatedItem, itemIndex },
+  });
+};
+// 要編輯的項目
+export const setEditItem = (editItem) => (dispatch) => {
+  dispatch({
+    type: SET_EDIT_ITEM,
+    payload: editItem,
+  });
+};
+
+export const updateEditItemTitle = (titleText) => (dispatch) => {
+  dispatch({
+    type: UPDATE_EDIT_ITEM_TITLE,
+    payload: titleText,
+  });
+};
+
+export const updateEditItemNote = (noteText) => (dispatch) => {
+  dispatch({
+    type: UPDATE_EDIT_ITEM_NOTE,
+    payload: noteText,
+  });
+};
+
+export const updateEditItemTime = (timeText) => (dispatch) => {
+  dispatch({
+    type: UPDATE_EDIT_ITEM_TIME,
+    payload: timeText,
+  });
+};
+
+export const updateEditItemCategory = (category) => (dispatch) => {
+  dispatch({
+    type: UPDATE_EDIT_ITEM_CATEGORY,
+    payload: category,
+  });
+};
+
+export const updateEditItemDivide = (divide) => (dispatch) => {
+  dispatch({
+    type: UPDATE_EDIT_ITEM_DIVIDE,
+    payload: divide,
   });
 };

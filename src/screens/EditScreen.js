@@ -22,25 +22,34 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-import { addCategory, updateItem } from "../redux/actions";
+import {
+  addCategory,
+  updateItem,
+  updateEditItemTitle,
+  updateEditItemNote,
+  updateEditItemTime,
+  updateEditItemCategory,
+  updateEditItemDivide,
+} from "../redux/actions";
 
 const days = ["日", "一", "二", "三", "四", "五", "六"];
 
 const EditScreen = ({ navigation, route: { params } }) => {
   // State
-  const { categoryList, itemList } = useSelector((state) => state.item);
+  const { categoryList, itemList, currentEditItem } = useSelector(
+    (state) => state.item
+  );
   const dispatch = useDispatch();
   // Initial Item
   const { title, note, time, category, divide, done } = params;
-  const initialItem = { ...params };
   // Edit Item
   const editItem = () => {
     let editedItem = {
-      title: currentTitle,
-      note: currentNote,
-      time: timeText,
-      category: currentCategory,
-      divide: currentDivide,
+      title: currentEditItem.title,
+      note: currentEditItem.note,
+      time: currentEditItem.time,
+      category: currentEditItem.category,
+      divide: currentEditItem.divide,
       done: done,
     };
     const itemIndex = itemList.items.findIndex(
@@ -66,19 +75,12 @@ const EditScreen = ({ navigation, route: { params } }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [secondModalVisible, setSecondModalVisible] = useState(false);
   // Title
-  const [currentTitle, setCurrentTitle] = useState(title);
   const [titleIsError, setTitleIsError] = useState(true);
-  // Note
-  const [currentNote, setCurrentNote] = useState(note);
   // Date and Time
   const [dateText, setDateText] = useState("");
-  const [timeText, setTimeText] = useState(time);
   const [timeIsError, setTimeIsError] = useState(true);
   // Category
-  const [currentCategory, setCurrentCategory] = useState(category);
   const [categoryIsError, setCategoryIsError] = useState(true);
-  // Divide
-  const [currentDivide, setCurrentDivide] = useState(divide);
   // 取得日期(設定日期文字)
   const getDate = (currentDate) => {
     let tempDate = new Date(currentDate);
@@ -102,7 +104,7 @@ const EditScreen = ({ navigation, route: { params } }) => {
       ":" +
       (tempDate.getMinutes() < 10 ? "0" : "") +
       tempDate.getMinutes();
-    setTimeText(dateText + fTime);
+    dispatch(updateEditItemTime(dateText + fTime));
   };
   // Date Time Picker Display (set date then set time)
   const onChange = (event, selectedDate) => {
@@ -142,27 +144,22 @@ const EditScreen = ({ navigation, route: { params } }) => {
     }
   };
   useEffect(() => {
-    currentTitle.length != 0 ? setTitleIsError(false) : setTitleIsError(true);
-    timeText.length != 0 ? setTimeIsError(false) : setTimeIsError(true);
-    currentCategory.length != 0
+    currentEditItem.title.length != 0
+      ? setTitleIsError(false)
+      : setTitleIsError(true);
+    currentEditItem.time.length != 0
+      ? setTimeIsError(false)
+      : setTimeIsError(true);
+    currentEditItem.category.length != 0
       ? setCategoryIsError(false)
       : setCategoryIsError(true);
-  }, [currentTitle, timeText, currentCategory]);
-  // 根據不同的 item 呈現對應資料
-  useEffect(() => {
-    setCurrentTitle(title);
-    setCurrentNote(note);
-    setTimeText(time);
-    setCurrentCategory(category);
-    setCurrentDivide(divide);
-  }, [params]);
-  // 重設輸入並回到 HomeTabs
+  }, [
+    currentEditItem.title,
+    currentEditItem.timeText,
+    currentEditItem.category,
+  ]);
+  // 重設錯誤判斷並回到 HomeTabs
   const resetForm = () => {
-    setCurrentTitle(title);
-    setCurrentNote(note);
-    setTimeText(time);
-    setCurrentCategory(category);
-    setCurrentDivide(divide);
     // 注意跟 note screen 不同
     setIsCheck(true);
     setTitleIsError(false);
@@ -192,9 +189,9 @@ const EditScreen = ({ navigation, route: { params } }) => {
           <Input
             placeholder={"更改標題"}
             fontSize={"md"}
-            defaultValue={title}
-            value={currentTitle}
-            onChangeText={(text) => setCurrentTitle(text)}
+            defaultValue={currentEditItem.title}
+            value={currentEditItem.title}
+            onChangeText={(text) => dispatch(updateEditItemTitle(text))}
             bgColor={colors.light100}
           />
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
@@ -204,9 +201,9 @@ const EditScreen = ({ navigation, route: { params } }) => {
         <FormControl mt={4}>
           <TextArea
             placeholder={"添加備註..."}
-            defaultValue={note}
-            value={currentNote}
-            onChangeText={(text) => setCurrentNote(text)}
+            defaultValue={currentEditItem.note}
+            value={currentEditItem.note}
+            onChangeText={(text) => dispatch(updateEditItemNote(text))}
             fontSize={"md"}
             minH={130}
             bgColor={colors.light100}
@@ -242,8 +239,8 @@ const EditScreen = ({ navigation, route: { params } }) => {
                   />
                 }
                 fontSize={"md"}
-                value={timeText}
-                defaultValue={time}
+                value={currentEditItem.time}
+                defaultValue={currentEditItem.time}
               />
             )}
           </Pressable>
@@ -285,8 +282,8 @@ const EditScreen = ({ navigation, route: { params } }) => {
                   />
                 }
                 fontSize={"md"}
-                value={currentCategory}
-                defaultValue={category}
+                value={currentEditItem.category}
+                defaultValue={currentEditItem.category}
               />
             )}
           </Pressable>
@@ -306,10 +303,10 @@ const EditScreen = ({ navigation, route: { params } }) => {
                   <FormControl mt={4} isRequired>
                     <Radio.Group
                       name="selecCategory"
-                      value={currentCategory}
-                      defaultValue={category}
+                      value={currentEditItem.category}
+                      defaultValue={currentEditItem.category}
                       onChange={(nextValue) => {
-                        setCurrentCategory(nextValue);
+                        dispatch(updateEditItemCategory(nextValue));
                       }}
                     >
                       {categoryList.categorys.length == 0 ? (
@@ -373,7 +370,7 @@ const EditScreen = ({ navigation, route: { params } }) => {
                     colorScheme="blueGray"
                     onPress={() => {
                       setModalVisible(false);
-                      setCurrentCategory("");
+                      dispatch(updateEditItemCategory(""));
                       setCategoryIsError(true);
                     }}
                   >
@@ -472,9 +469,9 @@ const EditScreen = ({ navigation, route: { params } }) => {
             defaultValue="low"
             name="exampleGroup"
             flexDir={"row"}
-            value={currentDivide}
+            value={currentEditItem.divide}
             onChange={(nextValue) => {
-              setCurrentDivide(nextValue);
+              dispatch(updateEditItemDivide(nextValue));
             }}
           >
             <Radio

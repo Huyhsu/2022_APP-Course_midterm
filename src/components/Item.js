@@ -14,7 +14,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { LogBox } from "react-native";
-import { updateItem } from "../redux/actions";
+import { setEditItem, updateItem } from "../redux/actions";
 LogBox.ignoreLogs(["NativeBase:"]);
 
 const Item = ({ item, item: { title, time, divide, done }, navigation }) => {
@@ -64,9 +64,13 @@ const Item = ({ item, item: { title, time, divide, done }, navigation }) => {
           justifyContent={"space-between"}
         >
           <Pressable
-            onPress={() =>
-              navigation.navigate("EditStack", { screen: "Edit", params: item })
-            }
+            onPress={() => {
+              dispatch(setEditItem(item));
+              navigation.navigate("EditStack", {
+                screen: "Edit",
+                params: item,
+              });
+            }}
           >
             <HStack alignItems={"center"}>
               <CircleIcon
