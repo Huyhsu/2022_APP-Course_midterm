@@ -42,6 +42,8 @@ const EditScreen = ({ navigation, route: { params } }) => {
   const dispatch = useDispatch();
   // Initial Item
   const { title, note, time, category, divide, done } = params;
+  // compare time
+  const timePattern = /\//g;
   // Edit Item
   const editItem = () => {
     let editedItem = {
@@ -51,6 +53,7 @@ const EditScreen = ({ navigation, route: { params } }) => {
       category: currentEditItem.category,
       divide: currentEditItem.divide,
       done: done,
+      compareTime: currentEditItem.time.replace(timePattern, "").slice(0, 8),
     };
     const itemIndex = itemList.items.findIndex(
       (value) =>

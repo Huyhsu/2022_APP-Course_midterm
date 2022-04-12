@@ -41,9 +41,12 @@ const NoteScreen = ({ navigation }) => {
       category: category,
       divide: divide,
       done: false,
+      compareTime: timeText.replace(timePattern, "").slice(0, 8),
     };
     dispatch(addItem(newItem));
   };
+  // compare time
+  const timePattern = /\//g;
   // Date Time Picker
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
@@ -56,7 +59,7 @@ const NoteScreen = ({ navigation }) => {
   const [titleIsError, setTitleIsError] = useState(true);
   // Note
   const [note, setNote] = useState("");
-  // Date and Time
+  // Date and Time and CompareTime
   const [dateText, setDateText] = useState("");
   const [timeText, setTimeText] = useState("");
   const [timeIsError, setTimeIsError] = useState(true);

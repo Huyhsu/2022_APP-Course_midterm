@@ -21,6 +21,7 @@ const initialState = {
     category: "",
     divide: "",
     done: "",
+    compareTime: "",
   },
   itemList: {
     items: [],
@@ -35,6 +36,7 @@ const initialState = {
     category: "",
     divide: "",
     done: "",
+    compareTime: "",
   },
 };
 
