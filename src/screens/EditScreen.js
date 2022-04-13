@@ -322,6 +322,7 @@ const EditScreen = ({ navigation, route: { params } }) => {
                             key={value + index}
                             value={value}
                             mx={1}
+                            my={1}
                             _text={{ color: colors.dark700, fontSize: "md" }}
                           >
                             {" "}

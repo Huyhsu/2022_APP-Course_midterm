@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { LogBox } from "react-native";
 import { setEditItem, updateItem } from "../redux/actions";
+// import {  } from "react-native-gesture-handler";
 LogBox.ignoreLogs(["NativeBase:"]);
 
 const Item = ({ item, item: { title, time, divide, done }, navigation }) => {
@@ -45,19 +46,21 @@ const Item = ({ item, item: { title, time, divide, done }, navigation }) => {
   const { colorMode } = useColorMode();
   // 處理過長標題
   let tempTitle = title;
+  let tempTime = time.slice(5);
   return (
     <Box
+      flex={1}
       _light={{ bgColor: colors.light100 }}
       _dark={{ bgColor: colors.light100 }}
       h={88}
-      w={328}
       py={6}
       pl={6}
       pr={4}
       mt={3}
       borderRadius={5}
+      bgColor={"amber.100"}
     >
-      <Center>
+      <Center w={"100%"}>
         <HStack
           w={"100%"}
           alignItems={"center"}
@@ -71,6 +74,7 @@ const Item = ({ item, item: { title, time, divide, done }, navigation }) => {
                 params: item,
               });
             }}
+            onLongPress={() => console.log("TAKOLONGGGGGGG")}
           >
             <HStack alignItems={"center"}>
               <CircleIcon
@@ -86,12 +90,12 @@ const Item = ({ item, item: { title, time, divide, done }, navigation }) => {
               />
               <VStack ml={6}>
                 <Text _light={{ color: colors.primary700 }} fontSize={"lg"}>
-                  {tempTitle.length >= 10
-                    ? tempTitle.substring(0, 9) + "..."
+                  {tempTitle.length > 10
+                    ? tempTitle.substring(0, 10) + "..."
                     : tempTitle}
                 </Text>
                 <Text color={colors.light700} fontSize={"sm"}>
-                  {time}
+                  {tempTime}
                 </Text>
               </VStack>
             </HStack>
