@@ -99,12 +99,21 @@ const CalendarScreen = ({ navigation }) => {
       selectedColor: colors.select700,
     };
     setStayPointedDate(date);
+    // 標記當前點擊的日期
     setPointedDay(tempPointDate);
   };
 
   useEffect(() => {
+    let tempPointDate = {};
+    tempPointDate[stayPointedDate] = {
+      selected: true,
+      selectedColor: colors.select700,
+    };
+    // 標記當前點擊的日期 為了更新 dark mode 顏色
+    setPointedDay(tempPointDate);
+    // 更新對應日期的事項
     dispatch(updateSelectItems(stayPointedDate));
-  }, [itemList]);
+  }, [itemList, colorMode]);
 
   const [allMarkedDates, setAllMarkDates] = useState({});
 
@@ -123,7 +132,7 @@ const CalendarScreen = ({ navigation }) => {
       };
     });
     setAllMarkDates(tempMarkedDates);
-  }, [itemList]);
+  }, [itemList, colorMode]);
 
   const renderItem = ({ item }) => <Item item={item} navigation={navigation} />;
 
