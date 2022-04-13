@@ -42,6 +42,7 @@ const NoteScreen = ({ navigation }) => {
       divide: divide,
       done: false,
       compareTime: timeText.replace(timePattern, "").slice(0, 8),
+      selectTime: timeText.replace(timePattern, "-").slice(0, 10),
     };
     dispatch(addItem(newItem));
   };

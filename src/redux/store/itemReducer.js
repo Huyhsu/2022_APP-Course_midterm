@@ -10,6 +10,7 @@ import {
   UPDATE_EDIT_ITEM_TIME,
   UPDATE_EDIT_ITEM_CATEGORY,
   UPDATE_EDIT_ITEM_DIVIDE,
+  UPDATE_SELECT_ITEMS,
 } from "../constants";
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
     divide: "",
     done: "",
     compareTime: "",
+    selectTime: "",
   },
   itemList: {
     items: [],
@@ -37,6 +39,10 @@ const initialState = {
     divide: "",
     done: "",
     compareTime: "",
+    selectTime: "",
+  },
+  currentSelectDateItemList: {
+    items: [],
   },
 };
 
@@ -106,6 +112,18 @@ export const itemReducer = (state = initialState, action) => {
         currentEditItem: {
           ...state.currentEditItem,
           divide: shouldEditItemDivide,
+        },
+      };
+    case UPDATE_SELECT_ITEMS:
+      const selectedDate = action.payload;
+      const shouldDisplayItems = state.itemList.items.filter(
+        (value) => value.selectTime == selectedDate
+      );
+      return {
+        ...state,
+        currentSelectDateItemList: {
+          ...state.currentSelectDateItemList,
+          items: [...shouldDisplayItems],
         },
       };
     default:

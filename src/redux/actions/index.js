@@ -10,6 +10,7 @@ import {
   UPDATE_EDIT_ITEM_TIME,
   UPDATE_EDIT_ITEM_CATEGORY,
   UPDATE_EDIT_ITEM_DIVIDE,
+  UPDATE_SELECT_ITEMS,
 } from "../constants";
 
 // ------- Item
@@ -81,5 +82,12 @@ export const updateEditItemDivide = (divide) => (dispatch) => {
   dispatch({
     type: UPDATE_EDIT_ITEM_DIVIDE,
     payload: divide,
+  });
+};
+
+export const updateSelectItems = (selectedDate) => (dispatch) => {
+  dispatch({
+    type: UPDATE_SELECT_ITEMS,
+    payload: selectedDate,
   });
 };

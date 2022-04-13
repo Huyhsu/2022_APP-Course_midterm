@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { Box, HStack, Text, useColorMode } from "native-base";
-import {
-  Calendar,
-  CalendarList,
-  Agenda,
-  LocaleConfig,
-} from "react-native-calendars";
+import { Box, FlatList, Text, useColorMode } from "native-base";
+import { useDispatch, useSelector } from "react-redux";
+import { Calendar, LocaleConfig } from "react-native-calendars";
+
+import Item from "../components/Item";
+import { updateSelectItems } from "../redux/actions";
 
 LocaleConfig.locales["fr"] = {
   monthNames: [
@@ -44,6 +43,11 @@ LocaleConfig.locales["fr"] = {
 LocaleConfig.defaultLocale = "fr";
 
 const CalendarScreen = ({ navigation }) => {
+  // State
+  const { currentSelectDateItemList, itemList } = useSelector(
+    (state) => state.item
+  );
+  const dispatch = useDispatch();
   const { colors } = useTheme();
   const { colorMode } = useColorMode();
   const [{ key, theme }, setTheme] = useState({
@@ -76,70 +80,109 @@ const CalendarScreen = ({ navigation }) => {
           },
         });
   }, [colorMode]);
+
+  const high = { key: "high", color: colors.high700 };
+  const medium = {
+    key: "medium",
+    color: colors.medium700,
+  };
+  const low = { key: "low", color: colors.low700 };
+  const primary = { key: "primary", color: colors.primary700 };
+
+  const [pointedDate, setPointedDay] = useState({});
+  const [stayPointedDate, setStayPointedDate] = useState("");
+
+  const getPointedDate = (date) => {
+    let tempPointDate = {};
+    tempPointDate[date] = {
+      selected: true,
+      selectedColor: colors.select700,
+    };
+    setStayPointedDate(date);
+    setPointedDay(tempPointDate);
+  };
+
+  useEffect(() => {
+    dispatch(updateSelectItems(stayPointedDate));
+  }, [itemList]);
+
+  const [allMarkedDates, setAllMarkDates] = useState({});
+
+  useEffect(() => {
+    let tempMarkedDates = {};
+    itemList.items.map((value) => {
+      tempMarkedDates[value.selectTime] = {
+        dots: [
+          primary,
+          // value.divide == "low"
+          //   ? low
+          //   : value.divide == "medium"
+          //   ? medium
+          //   : high,
+        ],
+      };
+    });
+    setAllMarkDates(tempMarkedDates);
+  }, [itemList]);
+
+  const renderItem = ({ item }) => <Item item={item} navigation={navigation} />;
+
   return (
     <Box
       flex={1}
-      pt={4}
-      px={4}
+      // px={4}
       _light={{ bgColor: colors.light100 }}
       _dark={{ bgColor: colors.light400 }}
     >
       <Calendar
-        // // Initially visible month. Default = now
-        // // current={"2012-03-01"}
-        // // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-        // minDate={"2022-04-01"}
-        // // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        // maxDate={"2023-05-30"}
-        // // Handler which gets executed on day press. Default = undefined
-        // onDayPress={(day) => {
-        //   console.log("selected day", day);
-        // }}
-        // // Handler which gets executed on day long press. Default = undefined
-        // onDayLongPress={(day) => {
-        //   console.log("selected day", day);
-        // }}
-        // // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-        // monthFormat={"yyyy MM"}
-        // // Handler which gets executed when visible month changes in calendar. Default = undefined
-        // onMonthChange={(month) => {
-        //   console.log("month changed", month);
-        // }}
-        // // Hide month navigation arrows. Default = false
-        // hideArrows={true}
-        // // Replace default arrows with custom ones (direction can be 'left' or 'right')
-        // renderArrow={(direction) => <Arrow />}
-        // // Do not show days of other months in month page. Default = false
-        // hideExtraDays={true}
-        // // If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out
-        // // day from another month that is visible in calendar page. Default = false
-        // disableMonthChange={true}
-        // // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday
-        // firstDay={1}
-        // // Hide day names. Default = false
-        // hideDayNames={true}
-        // // Show week numbers to the left. Default = false
-        // showWeekNumbers={true}
-        // // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-        // onPressArrowLeft={(subtractMonth) => subtractMonth()}
-        // // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-        // onPressArrowRight={(addMonth) => addMonth()}
-        // // Disable left arrow. Default = false
-        // disableArrowLeft={true}
-        // // Disable right arrow. Default = false
-        // disableArrowRight={true}
-        // // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-        // disableAllTouchEventsForDisabledDays={true}
-        // // Replace default month and year title with custom one. the function receive a date as parameter
-        // renderHeader={(date) => {
-        //   /*Return JSX*/
-        // }}
-        // // Enable the option to swipe between months. Default = false
-        // enableSwipeMonths={true}
+        markingType={"multi-dot"}
+        markedDates={{ ...allMarkedDates, ...pointedDate }}
+        minDate={"2022-04-01"}
+        onDayPress={(day) => {
+          // console.log("selected day", day.dateString);
+          dispatch(updateSelectItems(day.dateString));
+          getPointedDate(day.dateString);
+          // console.log(allMarkedDates);
+        }}
         enableSwipeMonths
         key={key}
-        theme={{ ...theme }}
+        theme={{ ...theme, dotStyle: { width: 8, height: 8, borderRadius: 8 } }}
       />
+      <Box
+        flex={1}
+        pt={4}
+        mt={4}
+        shadow={4}
+        bgColor={colors.secondary700}
+        borderTopRightRadius={24}
+        borderTopLeftRadius={24}
+        borderWidth={1}
+        borderColor={colors.light700}
+        borderBottomWidth={0}
+      >
+        {currentSelectDateItemList.items.length == 0 ? (
+          <Text
+            _light={{ color: colors.primary700 }}
+            fontSize={"md"}
+            pt={24}
+            alignSelf={"center"}
+          >
+            當日無待辦事項
+          </Text>
+        ) : (
+          <FlatList
+            data={currentSelectDateItemList.items}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => item.title + item.category + index}
+            contentContainerStyle={{
+              paddingTop: 16,
+              paddingBottom: 88,
+              paddingHorizontal: 16,
+            }}
+          />
+        )}
+      </Box>
     </Box>
   );
 };

@@ -24,6 +24,7 @@ export const lightTheme = {
     medium700: "#DEB16D",
     // Low
     low700: "#73C1D2",
+    select700: "#024D61",
   },
 };
 
@@ -42,5 +43,6 @@ export const darkTheme = {
     high700: "#9F5757",
     medium700: "#AB8853",
     low700: "#57929F",
+    select700: "#3A3B3C",
   },
 };

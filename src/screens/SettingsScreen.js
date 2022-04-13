@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme } from "@react-navigation/native";
-import { Box, HStack, Text, VStack, Center } from "native-base";
+import { Box, VStack } from "native-base";
 
 import SettingsOptions from "../components/SettingsOption";
 

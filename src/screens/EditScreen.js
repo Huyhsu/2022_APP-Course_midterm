@@ -54,6 +54,7 @@ const EditScreen = ({ navigation, route: { params } }) => {
       divide: currentEditItem.divide,
       done: done,
       compareTime: currentEditItem.time.replace(timePattern, "").slice(0, 8),
+      selectTime: currentEditItem.time.replace(timePattern, "-").slice(0, 10),
     };
     const itemIndex = itemList.items.findIndex(
       (value) =>
