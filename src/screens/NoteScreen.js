@@ -105,6 +105,7 @@ const NoteScreen = ({ navigation }) => {
         setShow(Platform !== "ios");
       } else {
         getTime(currentDate);
+        setShow(Platform.OS === "ios");
         setMode("date");
       }
     } else {

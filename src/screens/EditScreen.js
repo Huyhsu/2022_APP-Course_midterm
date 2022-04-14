@@ -121,6 +121,7 @@ const EditScreen = ({ navigation, route: { params } }) => {
         setShow(Platform !== "ios");
       } else {
         getTime(currentDate);
+        setShow(Platform.OS === "ios");
         setMode("date");
       }
     } else {
